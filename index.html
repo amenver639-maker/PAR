@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planificación y administración de redes - 1º ASIR</title>
+  <style>
+    :root {
+      --bg-main: #0a0512;
+      --bg-card: #150a26;
+      --bg-card-hover: #22103e;
+      --border-color: #3b1b6e;
+      --border-active: #8b5cf6;
+      --text-primary: #ffffff;
+      --text-secondary: #c084fc;
+      --text-muted: #a78bfa;
+      --accent: #8b5cf6;
+      --accent-light: #d8b4fe;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 40px;
+    }
+
+    .badge-sub {
+      display: inline-block;
+      background-color: #2e1065;
+      color: var(--accent-light);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .unit-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .unit-card:hover {
+      background-color: var(--bg-card-hover);
+      border-color: var(--border-active);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.25);
+    }
+
+    .unit-code {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .unit-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .unit-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(139, 92, 246, 0.15);
+      padding-top: 12px;
+      margin-top: auto;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .status-active {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-pending {
+      background: rgba(255, 255, 255, 0.05);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .arrow-icon {
+      color: var(--accent);
+      transition: transform 0.2s ease;
+      font-size: 1.2rem;
+    }
+
+    .unit-card:hover .arrow-icon {
+      transform: translateX(4px);
+      color: var(--accent-light);
+    }
+
+    footer {
+      margin-top: 50px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="badge-sub">1º ASIR · Módulo PAR</span>
+    <h1>Planificación y administración de redes</h1>
+    <p>Unidades Didácticas del Curso</p>
+  </header>
+
+  <main class="units-grid">
+    <!-- UD1 -->
+    <a href="ud1.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD1</div>
+        <div class="unit-title">Caracterización de redes</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD2 (Apunta a tu página de la UD2 / IEEE 802) -->
+    <a href="ud2.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD2</div>
+        <div class="unit-title">Integración de elementos en una red LAN. Medios de transmisión</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-active">Disponible</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD3 -->
+    <a href="ud3.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD3</div>
+        <div class="unit-title">Configuración y administración de conmutadores</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD4 -->
+    <a href="ud4.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD4</div>
+        <div class="unit-title">Configuración y administración de router</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD5 -->
+    <a href="ud5.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD5</div>
+        <div class="unit-title">Redes virtuales</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD6 -->
+    <a href="ud6.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD6</div>
+        <div class="unit-title">Protocolos dinámicos</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+
+    <!-- UD7 -->
+    <a href="ud7.html" class="unit-card">
+      <div>
+        <div class="unit-code">UD7</div>
+        <div class="unit-title">Acceso a Internet desde redes LAN</div>
+      </div>
+      <div class="unit-footer">
+        <span class="status-badge status-pending">Pendiente</span>
+        <span class="arrow-icon">&rarr;</span>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <p>&copy; Planificación y administración de redes · 1º ASIR</p>
+  </footer>
+
+</body>
+</html>

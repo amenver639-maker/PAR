@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UD2: Integración de elementos en una red LAN. Medios de transmisión</title>
+  <style>
+    :root {
+      --bg-main: #0a0512;
+      --bg-card: #150a26;
+      --bg-card-hover: #22103e;
+      --border-color: #3b1b6e;
+      --border-active: #8b5cf6;
+      --text-primary: #ffffff;
+      --text-secondary: #c084fc;
+      --text-muted: #a78bfa;
+      --accent: #8b5cf6;
+      --accent-light: #d8b4fe;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      padding: 8px 16px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background-color: var(--bg-card-hover);
+      border-color: var(--border-active);
+      color: var(--text-primary);
+    }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    .badge-unit {
+      display: inline-block;
+      background-color: #2e1065;
+      color: var(--accent-light);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      margin-bottom: 20px;
