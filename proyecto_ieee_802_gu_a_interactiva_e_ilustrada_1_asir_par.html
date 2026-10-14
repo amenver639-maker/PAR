@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto IEEE 802 · Guía Interactiva e Ilustrada (1º ASIR - PAR)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyberBg: '#0d0618',
+                        cyberCard: '#1c0f38',
+                        cyberBorder: '#2d1854',
+                        cyberHover: '#3b1c6e',
+                        accentCyan: '#38bdf8',
+                        accentGreen: '#4ade80',
+                        accentYellow: '#facc15',
+                        accentPurple: '#c084fc',
+                        highContrastText: '#ffffff',
+                        subContrastText: '#7dd3fc',
+                        lavenderText: '#f3e8ff'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0d0618;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0618;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d1854;
+            border-radius: 5px;
+            border: 2px solid #0d0618;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
+
+        .cyber-glow {
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+        .cyber-glow-purple {
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.25);
+        }
+        .layer-active {
+            border-color: #38bdf8 !important;
+            background-color: #2d1854 !important;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+        .tab-active {
+            border-bottom: 3px solid #38bdf8;
+            color: #ffffff !important;
+            background-color: #2d1854;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-cyberBg text-white pb-12 selection:bg-accentCyan selection:text-black">
+
+    <header class="border-b border-cyberBorder bg-cyberCard/90 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accentCyan to-accentPurple flex items-center justify-center text-black font-extrabold text-xl shadow-lg">
+                    802
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                        Proyecto IEEE 802 <span class="text-xs px-2 py-0.5 rounded bg-accentPurple/20 text-accentPurple border border-accentPurple/40">1º ASIR · PAR</span>
+                    </h1>
+                    <p class="text-xs text-subContrastText">Guía Interactiva, Arquitectura de Capas e Inspector de Tramas</p>
+                </div>
+            </div>
+            <nav class="flex items-center gap-2 text-xs sm:text-sm font-medium">
+                <a href="#osi-section" class="px-3 py-1.5 rounded-lg bg-cyberBorder hover:bg-cyberHover text-lavenderText hover:text-white transition border border-cyberBorder hover:border-accentCyan">
+                    <i class="fa-solid font-bold fa-layer-group text-accentCyan mr-1"></i> Modelo OSI
+                </a>
+                <a href="#frame-section" class="px-3 py-1.5 rounded-lg bg-cyberBorder hover:bg-cyberHover text-lavenderText hover:text-white transition border border-cyberBorder hover:border-accentGreen">
+                    <i class="fa-solid fa-code text-accentGreen mr-1"></i> Trama 802
+                </a>
+                <a href="#standards-section" class="px-3 py-1.5 rounded-lg bg-cyberBorder hover:bg-cyberHover text-lavenderText hover:text-white transition border border-cyberBorder hover:border-accentYellow">
+                    <i class="fa-solid fa-list-check text-accentYellow mr-1"></i> 16 Estándares
+                </a>
+                <a href="#exam-section" class="px-3 py-1.5 rounded-lg bg-cyberBorder hover:bg-cyberHover text-lavenderText hover:text-white transition border border-cyberBorder hover:border-accentPurple">
+                    <i class="fa-solid fa-graduation-cap text-accentPurple mr-1"></i> Test ASIR
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-12">
+
+        <section id="osi-section" class="bg-cyberCard rounded-2xl border-2 border-cyberBorder p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-accentPurple/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-accentCyan/20 text-accentCyan border border-accentCyan/40">MÓDULO PRINCIPAL</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Ubicación del Proyecto IEEE 802 en las Capas OSI</h2>
+                </div>
+                <p class="text-sm text-subContrastText">
+                    El proyecto IEEE 802 estandariza las redes de área local y metropolitana (LAN/MAN). Modifica el Modelo OSI dividiendo la <strong class="text-white underline decoration-accentCyan">Capa 2 (Enlace de Datos)</strong> en dos subcapas fundamentales: <strong class="text-accentCyan">LLC</strong> (en Software) y <strong class="text-accentGreen">MAC</strong> (en Hardware).
+                </p>
+            </div>
+
+            <!-- OSI Diagram Stack Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Stack Visualizer (Left Column) -->
+                <div class="lg:col-span-6 space-y-3">
+                    
+                    <!-- Capa 3: Red -->
+                    <button onclick="selectLayer('layer3')" id="btn-layer3" class="layer-btn w-full text-left p-4 rounded-xl border-2 border-cyberBorder bg-cyberBg hover:border-accentPurple transition relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-accentPurple/20 text-accentPurple flex items-center justify-center font-bold text-sm border border-accentPurple/40">C3</span>
+                                <div>
+                                    <h3 class="font-bold text-white text-base">CAPA 3: RED (NETWORK)</h3>
+                                    <p class="text-xs text-subContrastText">Protocolo IP, Direcciones Lógicas, Routers</p>
+                                </div>
+                            </div>
+                            <span class="text-xs px-2 py-1 rounded bg-cyberBorder text-lavenderText group-hover:text-white">Software SO</span>
+                        </div>
+                    </button>
+
+                    <!-- Capa 2 SPLIT HEADER -->
+                    <div class="p-3 rounded-xl border-2 border-dashed border-accentCyan/50 bg-cyberBg/60 space-y-2">
+                        <div class="flex items-center justify-between px-1">
+                            <span class="text-xs font-bold text-accentCyan uppercase tracking-wider flex items-center gap-1">
+                                <i class="fa-solid fa-scissors"></i> Capa 2: Enlace de Datos (Data Link) - DIVIDIDA POR IEEE 802
+                            </span>
+                            <span class="text-xs text-accentYellow font-mono">Capa 2 OSI</span>
+                        </div>
+
+                        <!-- Subcapa LLC (802.2) -->
+                        <button onclick="selectLayer('llc')" id="btn-llc" class="layer-btn w-full text-left p-3.5 rounded-lg border-2 border-cyberBorder bg-cyberCard hover:border-accentCyan transition group">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-7 h-7 rounded bg-accentCyan/20 text-accentCyan flex items-center justify-center font-bold text-xs border border-accentCyan/40">LLC</span>
+                                    <div>
+                                        <h4 class="font-bold text-white text-sm">Subcapa LLC (IEEE 802.2)</h4>
+                                        <p class="text-xs text-subContrastText">Logical Link Control · Control de Enlace Lógico</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded bg-accentCyan/20 text-accentCyan border border-accentCyan/30 font-semibold">SOFTWARE / DRIVER</span>
+                            </div>
+                        </button>
+
+                        <!-- Subcapa MAC (802.3 - 802.22) -->
+                        <button onclick="selectLayer('mac')" id="btn-mac" class="layer-btn w-full text-left p-3.5 rounded-lg border-2 border-cyberBorder bg-cyberCard hover:border-accentGreen transition group">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-7 h-7 rounded bg-accentGreen/20 text-accentGreen flex items-center justify-center font-bold text-xs border border-accentGreen/40">MAC</span>
+                                    <div>
+                                        <h4 class="font-bold text-white text-sm">Subcapa MAC (IEEE 802.3, 802.11...)</h4>
+                                        <p class="text-xs text-subContrastText">Media Access Control · Direccionamiento Físico</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded bg-accentGreen/20 text-accentGreen border border-accentGreen/30 font-semibold">HARDWARE / NIC</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Capa 1: Física -->
+                    <button onclick="selectLayer('layer1')" id="btn-layer1" class="layer-btn w-full text-left p-4 rounded-xl border-2 border-cyberBorder bg-cyberBg hover:border-accentYellow transition group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-accentYellow/20 text-accentYellow flex items-center justify-center font-bold text-sm border border-accentYellow/40">C1</span>
+                                <div>
+                                    <h3 class="font-bold text-white text-base">CAPA 1: FÍSICA (PHYSICAL)</h3>
+                                    <p class="text-xs text-subContrastText">Conectores RJ45, Cables Par Trenzado, Fibra Óptica, Radio RF</p>
+                                </div>
+                            </div>
+                            <span class="text-xs px-2 py-1 rounded bg-cyberBorder text-lavenderText group-hover:text-white">Medio Físico</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Layer Interactive Details Inspector (Right Column) -->
+                <div class="lg:col-span-6 bg-cyberBg rounded-xl border-2 border-cyberBorder p-6 flex flex-col justify-between min-h-[360px]" id="layer-detail-container">
+                    <!-- Dynamic Content populated via JavaScript -->
+                </div>
+
+            </div>
+        </section>
+
+        <section id="frame-section" class="bg-cyberCard rounded-2xl border-2 border-cyberBorder p-5 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-accentGreen/20 text-accentGreen border border-accentGreen/40">MÓDULO 2</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Inspector de Trama Interactivo (IEEE 802 Frame)</h2>
+                </div>
+                <p class="text-sm text-subContrastText">
+                    Haz clic en cualquier bloque de la trama genérica IEEE 802 para inspeccionar el cometido de sus campos, su tamaño en bytes y a qué subcapa (LLC o MAC) pertenecen.
+                </p>
+            </div>
+
+            <!-- Frame Structure Bar -->
+            <div class="overflow-x-auto pb-4">
+                <div class="min-w-[700px] flex items-stretch gap-1 bg-cyberBg p-3 rounded-xl border border-cyberBorder">
+                    
+                    <!-- MAC Header Destino -->
+                    <button onclick="selectFramePart('mac-dest')" id="frame-mac-dest" class="frame-part-btn flex-1 p-3 bg-accentGreen/20 hover:bg-accentGreen/30 border-2 border-accentGreen/60 rounded-lg text-center transition">
+                        <span class="block text-xs font-bold text-accentGreen uppercase">Subcapa MAC</span>
+                        <span class="block text-sm font-extrabold text-white">MAC Destino</span>
+                        <span class="block text-[11px] text-lavenderText font-mono">6 Bytes</span>
+                    </button>
+
+                    <!-- MAC Header Origen -->
+                    <button onclick="selectFramePart('mac-orig')" id="frame-mac-orig" class="frame-part-btn flex-1 p-3 bg-accentGreen/20 hover:bg-accentGreen/30 border-2 border-accentGreen/60 rounded-lg text-center transition">
+                        <span class="block text-xs font-bold text-accentGreen uppercase">Subcapa MAC</span>
+                        <span class="block text-sm font-extrabold text-white">MAC Origen</span>
+                        <span class="block text-[11px] text-lavenderText font-mono">6 Bytes</span>
+                    </button>
+
+                    <!-- LLC Header Block -->
+                    <button onclick="selectFramePart('llc-header')" id="frame-llc-header" class="frame-part-btn flex-[1.2] p-3 bg-accentCyan/20 hover:bg-accentCyan/30 border-2 border-accentCyan/60 rounded-lg text-center transition">
+                        <span class="block text-xs font-bold text-accentCyan uppercase">Subcapa LLC (802.2)</span>
+                        <span class="block text-sm font-extrabold text-white">DSAP + SSAP + Control</span>
+                        <span class="block text-[11px] text-lavenderText font-mono">3 a 4 Bytes</span>
+                    </button>
+
+                    <!-- Payload IP Data -->
+                    <button onclick="selectFramePart('payload')" id="frame-payload" class="frame-part-btn flex-[2] p-3 bg-accentPurple/20 hover:bg-accentPurple/30 border-2 border-accentPurple/60 rounded-lg text-center transition">
+                        <span class="block text-xs font-bold text-accentPurple uppercase">Capa 3 / Superior</span>
+                        <span class="block text-sm font-extrabold text-white">Datos IP (Payload)</span>
+                        <span class="block text-[11px] text-lavenderText font-mono">46 - 1500 Bytes</span>
+                    </button>
+
+                    <!-- CRC / FCS -->
+                    <button onclick="selectFramePart('crc')" id="frame-crc" class="frame-part-btn flex-1 p-3 bg-accentYellow/20 hover:bg-accentYellow/30 border-2 border-accentYellow/60 rounded-lg text-center transition">
+                        <span class="block text-xs font-bold text-accentYellow uppercase">Subcapa MAC</span>
+                        <span class="block text-sm font-extrabold text-white">CRC / FCS</span>
+                        <span class="block text-[11px] text-lavenderText font-mono">4 Bytes</span>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- Frame Inspector Explanation Box -->
+            <div class="mt-4 p-5 rounded-xl bg-cyberBg border-2 border-cyberBorder" id="frame-inspector-detail">
+                <!-- Javascript will inject payload here -->
+            </div>
+        </section>
+
+        <section id="standards-section" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-accentYellow/20 text-accentYellow border border-accentYellow/40">MÓDULO 3</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Explorador de los 16 Estándares IEEE 802</h2>
+                    </div>
+                    <p class="text-sm text-subContrastText">
+                        Catálogo completo desde IEEE 802.1 hasta 802.22. Haz clic en cualquier tarjeta para abrir la ficha técnica interactiva con 4 pestañas.
+                    </p>
+                </div>
+
+                <!-- Search Input Bar -->
+                <div class="w-full md:w-80 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-subContrastText"></i>
+                    <input type="text" id="search-input" onkeyup="filterStandards()" placeholder="Buscar estándar (ej. 802.3, Wi-Fi, Token, VLAN)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cyberCard border-2 border-cyberBorder text-white text-sm focus:outline-none focus:border-accentCyan transition placeholder:text-subContrastText/60">
+                </div>
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                <button onclick="setFilterCategory('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-xl bg-accentCyan text-black font-bold transition">Todas</button>
+                <button onclick="setFilterCategory('LAN')" id="filter-LAN" class="filter-btn px-4 py-2 rounded-xl bg-cyberCard border border-cyberBorder hover:border-accentCyan text-lavenderText hover:text-white transition">Redes LAN</button>
+                <button onclick="setFilterCategory('WLAN')" id="filter-WLAN" class="filter-btn px-4 py-2 rounded-xl bg-cyberCard border border-cyberBorder hover:border-accentCyan text-lavenderText hover:text-white transition">Inalámbricas (WLAN/WPAN)</button>
+                <button onclick="setFilterCategory('MAN')" id="filter-MAN" class="filter-btn px-4 py-2 rounded-xl bg-cyberCard border border-cyberBorder hover:border-accentCyan text-lavenderText hover:text-white transition">Metropolitanas (MAN/WRAN)</button>
+                <button onclick="setFilterCategory('Especiales')" id="filter-Especiales" class="filter-btn px-4 py-2 rounded-xl bg-cyberCard border border-cyberBorder hover:border-accentCyan text-lavenderText hover:text-white transition">Especiales y Móviles</button>
+            </div>
+
+            <!-- 16 Standards Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="standards-grid">
+                <!-- Populated via Javascript -->
+            </div>
+        </section>
+
+        <section id="exam-section" class="bg-cyberCard rounded-2xl border-2 border-cyberBorder p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div class="mb-6">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-accentPurple/20 text-accentPurple border border-accentPurple/40">MÓDULO 4</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Simulador de Examen ASIR (6 Preguntas Clave)</h2>
+                </div>
+                <p class="text-sm text-subContrastText">
+                    Comprueba tus conocimientos sobre la arquitectura IEEE 802, subcapas LLC/MAC, tramas y estándares para el examen del módulo PAR.
+                </p>
+            </div>
+
+            <div id="quiz-container" class="space-y-6">
+                <!-- Javascript renders questions here -->
+            </div>
+
+            <div id="quiz-results" class="hidden mt-8 p-6 bg-cyberBg border-2 border-accentPurple rounded-xl text-center space-y-4">
+                <h3 class="text-2xl font-bold text-white">Resultado del Test</h3>
+                <div class="text-4xl font-extrabold text-accentCyan" id="score-text">0 / 6</div>
+                <p class="text-sm text-subContrastText" id="feedback-text"></p>
+                <button onclick="resetQuiz()" class="px-6 py-2.5 rounded-xl bg-accentPurple hover:bg-purple-600 text-white font-bold transition">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Repetir Test
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="standard-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-cyberCard border-2 border-cyberBorder w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
+            
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-cyberBorder flex items-center justify-between bg-cyberBg">
+                <div class="flex items-center gap-3">
+                    <span id="modal-badge" class="px-3 py-1 rounded-lg bg-accentCyan/20 text-accentCyan font-mono font-bold text-sm border border-accentCyan/40">IEEE 802.X</span>
+                    <h3 id="modal-title" class="text-lg sm:text-xl font-bold text-white">Título del Estándar</h3>
+                </div>
+                <button onclick="closeModal()" class="w-9 h-9 rounded-lg bg-cyberBorder hover:bg-red-500/20 text-subContrastText hover:text-red-400 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Navigation Tabs -->
+            <div class="flex border-b border-cyberBorder bg-cyberBg/50 text-xs sm:text-sm font-semibold overflow-x-auto">
+                <button onclick="switchTab('tab-diagram')" id="btn-tab-diagram" class="tab-btn px-5 py-3 text-subContrastText hover:text-white transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-project-diagram text-accentCyan"></i> 1. Esquema Técnico
+                </button>
+                <button onclick="switchTab('tab-hardware')" id="btn-tab-hardware" class="tab-btn px-5 py-3 text-subContrastText hover:text-white transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-microchip text-accentGreen"></i> 2. Hardware y Dispositivo
+                </button>
+                <button onclick="switchTab('tab-analogy')" id="btn-tab-analogy" class="tab-btn px-5 py-3 text-subContrastText hover:text-white transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-lightbulb text-accentYellow"></i> 3. Analogía Sencilla
+                </button>
+                <button onclick="switchTab('tab-exam')" id="btn-tab-exam" class="tab-btn px-5 py-3 text-subContrastText hover:text-white transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-circle-exclamation text-accentPurple"></i> 4. Clave de Examen ASIR
+                </button>
+            </div>
+
+            <!-- Modal Body Content -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-4" id="modal-body">
+                <!-- Javascript injects active tab content here -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-cyberBorder bg-cyberBg flex justify-end">
+                <button onclick="closeModal()" class="px-5 py-2 rounded-xl bg-cyberBorder hover:bg-cyberHover text-white font-semibold transition">
+                    Cerrar Ficha
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        // 16 IEEE 802 Standards Full Data Repository
+        const standardsData = [
+            {
+                id: '802.1',
+                code: 'IEEE 802.1',
+                category: 'LAN',
+                title: 'Gestión de Red, VLANs y Spanning Tree (STP)',
+                subtitle: 'Arquitectura de Red, Bridging y Gestión',
+                desc: 'Define la arquitectura general de redes LAN/MAN, gestión de switches, VLANs (802.1Q) y prevención de bucles con Spanning Tree (802.1D).',
+                analogy: 'Imagínate un agente de tráfico en una rotonda gigante. Si los coches (paquetes) empiezan a dar vueltas en círculo sin parar (bucle de red), el agente bloquea una calle para evitar el colapso. Además, pone pegatinas de colores a los coches (VLANs) para que solo vayan a los barrios que les corresponden.',
+                hardwareName: 'Switch Gestionable Capa 2/3 con enlaces Troncales (Trunks)',
+                examKey: '¡Pregunta típica de examen! 802.1Q añade un tag de 4 Bytes a la trama Ethernet para identificar la VLAN. Spanning Tree (STP / 802.1D) evita bucles de conmutación deshabilitando puertos redundantes.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 220" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="230" y="20" width="140" height="50" rx="8" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="50" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Root Bridge (STP)</text>
+                        <line x1="250" y1="70" x2="120" y2="130" stroke="#38bdf8" stroke-width="3"/>
+                        <line x1="350" y1="70" x2="480" y2="130" stroke="#38bdf8" stroke-width="3"/>
+                        <line x1="120" y1="160" x2="480" y2="160" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,6"/>
+                        <circle x1="300" y1="160" r="14" fill="#ef4444"/>
+                        <text x="300" y="164" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">X</text>
+                        <rect x="50" y="130" width="140" height="50" rx="8" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="120" y="160" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Switch A (VLAN 10)</text>
+                        <rect x="410" y="130" width="140" height="50" rx="8" fill="#1c0f38" stroke="#facc15" stroke-width="2"/>
+                        <text x="480" y="160" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Switch B (VLAN 20)</text>
+                        <text x="300" y="200" fill="#7dd3fc" font-size="11" text-anchor="middle">Paso 1: STP bloquea el enlace redundante (rojo) para prevenir bucle de broadcast.</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <!-- Switch Managed Chassis -->
+                        <rect x="50" y="50" width="500" height="100" rx="10" fill="#1c0f38" stroke="#38bdf8" stroke-width="3"/>
+                        <!-- Ports -->
+                        <g fill="#2d1854" stroke="#7dd3fc" stroke-width="1">
+                            <rect x="80" y="75" width="20" height="25" rx="3"/><rect x="110" y="75" width="20" height="25" rx="3"/>
+                            <rect x="140" y="75" width="20" height="25" rx="3"/><rect x="170" y="75" width="20" height="25" rx="3"/>
+                            <rect x="200" y="75" width="20" height="25" rx="3"/><rect x="230" y="75" width="20" height="25" rx="3"/>
+                            <!-- SFP Fiber Uplink Trunk Ports -->
+                            <rect x="440" y="70" width="35" height="35" rx="4" fill="#38bdf8"/>
+                            <rect x="490" y="70" width="35" height="35" rx="4" fill="#38bdf8"/>
+                        </g>
+                        <!-- LED Indicators -->
+                        <circle cx="85" cy="115" r="3" fill="#4ade80"/>
+                        <circle cx="115" cy="115" r="3" fill="#4ade80"/>
+                        <circle cx="145" cy="115" r="3" fill="#facc15"/>
+                        <text x="300" y="130" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Switch Enterprise Gestionable 24 Puertos + 2 SFP Trunk (802.1Q)</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.2',
+                code: 'IEEE 802.2',
+                category: 'LAN',
+                title: 'Logical Link Control (LLC)',
+                subtitle: 'Subcapa Superior de Enlace de Datos (Software)',
+                desc: 'Proporciona una interfaz uniforme e independiente del medio físico hacia la Capa 3 (IP). Gestiona multiplexación con DSAP/SSAP y control de flujo/errores.',
+                analogy: 'Es como la oficina de correos central. Le da igual si la carta se va a transportar en camión (Ethernet 802.3) o en avión (Wi-Fi 802.11); ponle el mismo sello estándar (DSAP/SSAP) y la carta llegará igual a la Capa 3.',
+                hardwareName: 'Controlador de Red (Driver) del Sistema Operativo',
+                examKey: '¡OJO EXAMEN! IEEE 802.2 es la ÚNICA subcapa que se ejecuta en SOFTWARE/DRIVER en el Sistema Operativo. Es IDÉNTICA para todas las redes 802.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="50" y="20" width="500" height="40" rx="6" fill="#1c0f38" stroke="#c084fc" stroke-width="2"/>
+                        <text x="300" y="45" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Capa 3: Protocolo IP (Paquete de Datos)</text>
+                        <rect x="50" y="80" width="500" height="40" rx="6" fill="#2d1854" stroke="#38bdf8" stroke-width="3"/>
+                        <text x="300" y="105" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Subcapa LLC (IEEE 802.2) - Mismo Formato para Todo</text>
+                        <line x1="150" y1="120" x2="100" y2="160" stroke="#4ade80" stroke-width="2"/>
+                        <line x1="300" y1="120" x2="300" y2="160" stroke="#facc15" stroke-width="2"/>
+                        <line x1="450" y1="120" x2="500" y2="160" stroke="#c084fc" stroke-width="2"/>
+                        <rect x="30" y="160" width="140" height="30" rx="4" fill="#1c0f38" stroke="#4ade80"/><text x="100" y="180" fill="#ffffff" font-size="11" text-anchor="middle">802.3 Ethernet</text>
+                        <rect x="230" y="160" width="140" height="30" rx="4" fill="#1c0f38" stroke="#facc15"/><text x="300" y="180" fill="#ffffff" font-size="11" text-anchor="middle">802.11 Wi-Fi</text>
+                        <rect x="430" y="160" width="140" height="30" rx="4" fill="#1c0f38" stroke="#c084fc"/><text x="500" y="180" fill="#ffffff" font-size="11" text-anchor="middle">802.15 Bluetooth</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="100" y="30" width="400" height="120" rx="12" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="65" fill="#38bdf8" font-size="16" font-weight="bold" text-anchor="middle">Kernel del Sistema Operativo (Linux / Windows)</text>
+                        <rect x="140" y="85" width="320" height="45" rx="6" fill="#2d1854" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="112" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Driver de Red (ej. e1000e.sys / net_device)</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.3',
+                code: 'IEEE 802.3',
+                category: 'LAN',
+                title: 'Ethernet (CSMA/CD)',
+                subtitle: 'Redes Locales por Cable Par Trenzado y Fibra',
+                desc: 'Estándar dominante en redes cableadas. Originalmente utilizaba bus coaxial con acceso CSMA/CD; hoy utiliza switches full-duplex sobre cable par trenzado (RJ45) y fibra óptica.',
+                analogy: 'CSMA/CD es como una cena formal: escuchas si alguien habla antes de hablar (Carrier Sense). Todos pueden hablar (Multiple Access). Si dos hablan a la vez (Collision), se callan, esperan un tiempo aleatorio y vuelven a probar (Collision Detection).',
+                hardwareName: 'Tarjeta de Red (NIC) Ethernet RJ45, Cables Cat6a/Cat8 y Switches',
+                examKey: '¡Clave de Examen! CSMA/CD detecta colisiones durante la transmisión. No se usa en conmutación Full-Duplex moderna, pero se sigue preguntando. Dirección MAC física fija de 48 bits (6 Bytes). Trama máxima 1518 Bytes.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="50" y="80" width="500" height="12" fill="#38bdf8" rx="6"/>
+                        <text x="300" y="65" fill="#7dd3fc" font-size="12" font-weight="bold" text-anchor="middle">Medio Compartido (Bus / Cable CSMA/CD)</text>
+                        <!-- Node A -->
+                        <rect x="80" y="120" width="90" height="45" rx="6" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="125" y="147" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Nodo A</text>
+                        <line x1="125" y1="92" x2="125" y2="120" stroke="#4ade80" stroke-width="3"/>
+                        <!-- Node B Collision -->
+                        <rect x="430" y="120" width="90" height="45" rx="6" fill="#1c0f38" stroke="#ef4444" stroke-width="2"/>
+                        <text x="475" y="147" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Nodo B</text>
+                        <line x1="475" y1="92" x2="475" y2="120" stroke="#ef4444" stroke-width="3"/>
+                        <!-- Blast Collision icon -->
+                        <polygon points="300,70 310,80 325,75 315,90 330,95 305,100 300,115 295,100 270,95 285,90 275,75 290,80" fill="#facc15"/>
+                        <text x="300" y="135" fill="#facc15" font-size="11" font-weight="bold" text-anchor="middle">¡COLISIÓN DETECTADA!</text>
+                        <text x="300" y="180" fill="#7dd3fc" font-size="11" text-anchor="middle">Ambos nodos cancelan envio, envian señal JAM y esperan Backoff aleatorio.</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <!-- PCIe NIC Card -->
+                        <rect x="100" y="40" width="300" height="120" rx="8" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <rect x="70" y="60" width="30" height="80" fill="#38bdf8"/> <!-- Metallic Bracket -->
+                        <rect x="60" y="80" width="25" height="40" rx="3" fill="#0d0618" stroke="#facc15" stroke-width="2"/> <!-- RJ45 Port -->
+                        <!-- Cable RJ45 -->
+                        <path d="M 10 100 L 60 100" stroke="#facc15" stroke-width="8"/>
+                        <text x="250" y="90" fill="#ffffff" font-size="14" font-weight="bold">Tarjeta NIC PCIe Gigabit Ethernet</text>
+                        <text x="250" y="115" fill="#4ade80" font-size="12" font-mono">MAC: 00:1A:2B:3C:4D:5E</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.4',
+                code: 'IEEE 802.4',
+                category: 'LAN',
+                title: 'Token Bus',
+                subtitle: 'Paso de Testigo en Bus Físico Industrial',
+                desc: 'Combina la topología física en bus de Ethernet con el acceso determinista mediante paso de testigo (Token). Diseñado para automatización industrial.',
+                analogy: 'Un grupo de trabajo alineado a lo largo de un pasillo. Aunque estén en fila recta, se pasan una llave física de uno a otro en un orden preestablecido. Solo quien tiene la llave puede transmitir.',
+                hardwareName: 'Módem y Controlador Coaxial para Automatización Industrial',
+                examKey: '¡Importante! Topología FÍSICA en Bus, pero topología LÓGICA en Anillo. Es determinista (evita colisiones), ideal para fábricas y robots.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <line x1="60" y1="80" x2="540" y2="80" stroke="#38bdf8" stroke-width="6"/>
+                        <!-- Nodes -->
+                        <circle cx="100" cy="80" r="22" fill="#1c0f38" stroke="#4ade80" stroke-width="3"/>
+                        <text x="100" y="85" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Node 1</text>
+                        <circle cx="230" cy="80" r="22" fill="#1c0f38" stroke="#4ade80" stroke-width="3"/>
+                        <text x="230" y="85" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Node 2</text>
+                        <circle cx="370" cy="80" r="22" fill="#1c0f38" stroke="#4ade80" stroke-width="3"/>
+                        <text x="370" y="85" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Node 3</text>
+                        <circle cx="500" cy="80" r="22" fill="#1c0f38" stroke="#4ade80" stroke-width="3"/>
+                        <text x="500" y="85" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Node 4</text>
+                        <!-- Token Path Arrows -->
+                        <path d="M 120 110 Q 230 150 350 110" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="230" y="150" fill="#facc15" font-size="12" text-anchor="middle">Paso de Testigo (Token) Lógico</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="40" width="300" height="100" rx="8" fill="#1c0f38" stroke="#facc15" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Controlador Token Bus Industrial (MAP)</text>
+                        <circle cx="200" cy="110" r="10" fill="#38bdf8"/>
+                        <text x="300" y="115" fill="#7dd3fc" font-size="12" text-anchor="middle">Conector Coaxial T-BNC 75 Ohmios</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.5',
+                code: 'IEEE 802.5',
+                category: 'LAN',
+                title: 'Token Ring',
+                subtitle: 'Redes en Anillo con Paso de Testigo (IBM)',
+                desc: 'Desarrollado por IBM. Utiliza una topología en anillo donde una trama especial llamada "Testigo" (Token) circula continuamente. Solo el equipo poseedor del Token puede enviar datos.',
+                analogy: 'Un tren en miniatura circular continuo con un único vagón vacío. Para enviar una carta, esperas a que el tren pase por tu estación, pones la carta dentro y la mandas al destinatario.',
+                hardwareName: 'MAU (Multistation Access Unit) y Tarjetas Token Ring con conector DB9 / IBM',
+                examKey: '¡Pregunta frecuente! Acceso DETERMINISTA y libre de colisiones. Físicamente se conectaba en estrella a una MAU, pero la lógica interna del circuito era un ANILLO.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <circle cx="300" cy="100" r="65" fill="none" stroke="#38bdf8" stroke-width="4"/>
+                        <circle cx="300" cy="35" r="18" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="40" fill="#fff" font-size="10" text-anchor="middle">PC A</text>
+                        <circle cx="365" cy="100" r="18" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="365" y="105" fill="#fff" font-size="10" text-anchor="middle">PC B</text>
+                        <circle cx="300" cy="165" r="18" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="170" fill="#fff" font-size="10" text-anchor="middle">PC C</text>
+                        <circle cx="235" cy="100" r="18" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="235" y="105" fill="#fff" font-size="10" text-anchor="middle">PC D</text>
+                        <!-- Moving Token -->
+                        <rect x="330" y="50" width="25" height="14" rx="3" fill="#facc15"/>
+                        <text x="342" y="61" fill="#000" font-size="9" font-weight="bold" text-anchor="middle">TKN</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="100" y="40" width="400" height="100" rx="10" fill="#1c0f38" stroke="#c084fc" stroke-width="2"/>
+                        <text x="300" y="70" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Concentrador MAU (IBM 8228)</text>
+                        <g fill="#2d1854" stroke="#c084fc">
+                            <rect x="140" y="85" width="30" height="30" rx="3"/>
+                            <rect x="190" y="85" width="30" height="30" rx="3"/>
+                            <rect x="240" y="85" width="30" height="30" rx="3"/>
+                            <rect x="290" y="85" width="30" height="30" rx="3"/>
+                            <rect x="340" y="85" width="30" height="30" rx="3"/>
+                            <rect x="390" y="85" width="30" height="30" rx="3"/>
+                        </g>
+                        <text x="300" y="160" fill="#7dd3fc" font-size="11" text-anchor="middle">Puertos RI (Ring In) / RO (Ring Out) para conmutación de anillo</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.6',
+                code: 'IEEE 802.6',
+                category: 'MAN',
+                title: 'Redes MAN (DQDB)',
+                subtitle: 'Distributed Queue Dual Bus',
+                desc: 'Estándar para Redes de Área Metropolitana. Utiliza dos buses de fibra óptica unidireccionales e independientes para cubrir distancias de ciudad.',
+                analogy: 'Dos cintas transportadoras paralelas en una ciudad que van en sentidos opuestos. Para enviar un paquete al norte, usas la cinta A; para el sur, la cinta B.',
+                hardwareName: 'Nodos DQDB y Enlaces de Fibra Óptica Metropolitana',
+                examKey: 'Usa la arquitectura DQDB (Doble Bus de Cola Distribuida) con celda de tamaño fijo (53 bytes, precursor de ATM).',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <line x1="50" y1="60" x2="550" y2="60" stroke="#38bdf8" stroke-width="4"/>
+                        <text x="560" y="65" fill="#38bdf8" font-size="12">Bus A &#8594;</text>
+                        <line x1="50" y1="120" x2="550" y2="120" stroke="#4ade80" stroke-width="4"/>
+                        <text x="560" y="125" fill="#4ade80" font-size="12">&#8592; Bus B</text>
+                        <rect x="150" y="70" width="60" height="40" rx="6" fill="#1c0f38" stroke="#ffffff"/>
+                        <rect x="300" y="70" width="60" height="40" rx="6" fill="#1c0f38" stroke="#ffffff"/>
+                        <rect x="450" y="70" width="60" height="40" rx="6" fill="#1c0f38" stroke="#ffffff"/>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="120" y="30" width="360" height="100" rx="8" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="70" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Nodos MAN DQDB Urbanos</text>
+                        <text x="300" y="100" fill="#7dd3fc" font-size="12" text-anchor="middle">Transceptores Opticos de Doble Bus</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.8',
+                code: 'IEEE 802.8',
+                category: 'LAN',
+                title: 'Fibra Óptica (TAG FDDI)',
+                subtitle: 'Grupo Asesor Técnico de Fibra Óptica',
+                desc: 'Grupo de asesoramiento técnico sobre fibra óptica en redes 802, basado en FDDI (Anillo doble de fibra óptica contratransmitida a 100 Mbps).',
+                analogy: 'Una autopista circular con dos carriles que giran en sentidos opuestos. Si un tramo se rompe, los dos carriles se unen formando un bucle cerrado para mantener el tráfico activo.',
+                hardwareName: 'Transceptores Opticos SC/ST y Anillos Duales FDDI',
+                examKey: 'Tolerante a fallos mediante su doble anillo autorregenerable (Self-healing). Velocidad histórica de 100 Mbps.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <circle cx="300" cy="90" r="60" fill="none" stroke="#38bdf8" stroke-width="3"/>
+                        <circle cx="300" cy="90" r="45" fill="none" stroke="#4ade80" stroke-width="3"/>
+                        <text x="300" y="95" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">Doble Anillo Fibra</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="40" width="300" height="80" rx="8" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="85" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Módulo Óptico Monomodo / Multimodo FDDI</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.9',
+                code: 'IEEE 802.9',
+                category: 'Especiales',
+                title: 'Integración Voz y Datos (ISLAN)',
+                subtitle: 'Integrated Services LAN',
+                desc: 'Integraba voz multiplexada y datos sobre cables telefónicos y de red existentes, conectando LANs con RDSI (ISDN).',
+                analogy: 'Un camión con dos compartimentos: uno reservado para llamadas telefónicas analógicas sin retardo y otro para archivos de datos.',
+                hardwareName: 'Interfaces Integradas Telefonía/LAN y Centralitas PBX',
+                examKey: 'Precursor primitivo de la telefonía VoIP sobre infraestructuras de cable LAN.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="100" y="50" width="180" height="60" rx="8" fill="#1c0f38" stroke="#38bdf8"/>
+                        <text x="190" y="85" fill="#38bdf8" font-weight="bold" text-anchor="middle">Canal Datos Ethernet</text>
+                        <rect x="320" y="50" width="180" height="60" rx="8" fill="#1c0f38" stroke="#facc15"/>
+                        <text x="410" y="85" fill="#facc15" font-weight="bold" text-anchor="middle">Canal Voz RDSI (64kbps)</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="30" width="300" height="100" rx="8" fill="#1c0f38" stroke="#facc15" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Patch Panel Híbrido Voz/Datos ISLAN</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.10',
+                code: 'IEEE 802.10',
+                category: 'Especiales',
+                title: 'Seguridad en LAN/MAN (SILS)',
+                subtitle: 'Standard for Interoperable LAN/MAN Security',
+                desc: 'Definía cifrado, autenticación e intercambio de claves en la capa de enlace para redes locales y metropolitanas.',
+                analogy: 'Un furgón blindado que introduce cada paquete de red en una caja fuerte antes de sacarlo a la carretera.',
+                hardwareName: 'Cifradores de Hardware a nivel de Capa 2',
+                examKey: 'Proporcionaba cifrado a nivel de trama MAC antes del auge de IPsec y WPA.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="50" width="300" height="60" rx="8" fill="#1c0f38" stroke="#c084fc" stroke-width="3"/>
+                        <text x="300" y="85" fill="#c084fc" font-size="14" font-weight="bold" text-anchor="middle">[ Header SILS Cifrado ] [ Datos ]</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="40" width="300" height="80" rx="8" fill="#1c0f38" stroke="#c084fc" stroke-width="2"/>
+                        <text x="300" y="85" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Módulo Hardware Criptográfico L2</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.11',
+                code: 'IEEE 802.11',
+                category: 'WLAN',
+                title: 'Wi-Fi (CSMA/CA)',
+                subtitle: 'Redes Inalámbricas de Área Local (WLAN)',
+                desc: 'Estándar universal Wi-Fi (802.11a/b/g/n/ac/ax/be). Utiliza ondas de radio en bandas de 2.4 GHz, 5 GHz y 6 GHz con acceso al medio CSMA/CA.',
+                analogy: 'En una clase ruidosa, antes de hablar pides permiso levantando la mano (RTS - Request to Send). El profesor te responde "Habla" (CTS - Clear to Send). Así se evita hablar a la vez que otros que no ves (Nodo Oculto).',
+                hardwareName: 'Punto de Acceso (Access Point Wi-Fi 6E/7) y Tarjetas Inalámbricas',
+                examKey: '¡SÚPER CLAVE DE EXAMEN! Wi-Fi usa CSMA/CA (Collision Avoidance), NO CSMA/CD. Usa tramas ACK obligatorias y mecanismo RTS/CTS para resolver el Problema del Nodo Oculto.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 200" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <!-- AP Center -->
+                        <circle cx="300" cy="100" r="30" fill="#1c0f38" stroke="#38bdf8" stroke-width="3"/>
+                        <text x="300" y="105" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">AP Wi-Fi</text>
+                        <!-- Waves -->
+                        <circle cx="300" cy="100" r="55" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4,4"/>
+                        <circle cx="300" cy="100" r="80" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2,2"/>
+                        <!-- STA A -->
+                        <rect x="80" y="80" width="70" height="40" rx="6" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="115" y="105" fill="#fff" font-size="11" text-anchor="middle">Cliente A</text>
+                        <!-- RTS/CTS arrows -->
+                        <line x1="150" y1="90" x2="270" y2="95" stroke="#facc15" stroke-width="2"/>
+                        <text x="210" y="85" fill="#facc15" font-size="10" font-weight="bold" text-anchor="middle">RTS / CTS</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <!-- Access Point Box -->
+                        <rect x="200" y="60" width="200" height="80" rx="12" fill="#1c0f38" stroke="#38bdf8" stroke-width="3"/>
+                        <!-- Antennas -->
+                        <line x1="220" y1="60" x2="200" y2="20" stroke="#38bdf8" stroke-width="4"/>
+                        <line x1="380" y1="60" x2="400" y2="20" stroke="#38bdf8" stroke-width="4"/>
+                        <line x1="300" y1="60" x2="300" y2="15" stroke="#38bdf8" stroke-width="4"/>
+                        <text x="300" y="105" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Access Point Wi-Fi 6 (802.11ax)</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.15',
+                code: 'IEEE 802.15',
+                category: 'WLAN',
+                title: 'WPAN (Bluetooth / Zigbee)',
+                subtitle: 'Redes Inalámbricas de Área Personal',
+                desc: 'Cubre redes inalámbricas de corto alcance y bajo consumo: 802.15.1 (Bluetooth) y 802.15.4 (Zigbee / IoT).',
+                analogy: 'Un susurro a muy corta distancia entre tus auriculares y tu smartphone o un sensor de temperatura IoT con una pila de botón que dura 2 años.',
+                hardwareName: 'Módulos Bluetooth 5.x, SoCs ESP32, Zigbee Dongles USB',
+                examKey: '802.15.1 es el estándar base de Bluetooth. 802.15.4 es la base de Zigbee e hilos IoT de ultra bajo consumo.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <circle cx="200" cy="80" r="25" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="200" y="85" fill="#fff" font-size="11" text-anchor="middle">Móvil</text>
+                        <circle cx="400" cy="80" r="25" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="400" y="85" fill="#fff" font-size="11" text-anchor="middle">Reloj IoT</text>
+                        <path d="M 230 80 Q 300 50 370 80" fill="none" stroke="#c084fc" stroke-width="3" stroke-dasharray="4,4"/>
+                        <text x="300" y="55" fill="#c084fc" font-size="11" text-anchor="middle">Bluetooth / Zigbee (&lt;10m)</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="180" y="40" width="240" height="90" rx="8" fill="#1c0f38" stroke="#c084fc" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Módulo ESP32 / Zigbee IoT</text>
+                        <text x="300" y="105" fill="#7dd3fc" font-size="11" text-anchor="middle">SoC Inalámbrico de Bajo Consumo</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.16',
+                code: 'IEEE 802.16',
+                category: 'MAN',
+                title: 'WiMAX (MAN Inalámbrica)',
+                subtitle: 'Acceso Inalámbrico de Banda Ancha',
+                desc: 'Proporciona acceso a internet inalámbrico de alta velocidad a escala ciudad o zonas rurales (hasta 50 km de cobertura).',
+                analogy: 'Un faro gigante en la cima de una montaña que reparte internet por aire a todo un valle sin necesidad de tirar cables.',
+                hardwareName: 'Torres Base WiMAX y Antenas CPE de Usuario Final',
+                examKey: 'Conocido comercialmente como WiMAX. Diseñado para la "última milla" de banda ancha sin cables.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 180" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <!-- Tower -->
+                        <polygon points="120,160 140,40 160,160" fill="none" stroke="#facc15" stroke-width="3"/>
+                        <text x="140" y="30" fill="#facc15" font-size="12" font-weight="bold" text-anchor="middle">Torre WiMAX Base</text>
+                        <!-- Long beam -->
+                        <line x1="150" y1="50" x2="480" y2="120" stroke="#38bdf8" stroke-width="4" stroke-dasharray="6,4"/>
+                        <rect x="480" y="100" width="70" height="50" rx="6" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="515" y="130" fill="#fff" font-size="11" text-anchor="middle">CPE Rural</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="200" y="30" width="200" height="100" rx="10" fill="#1c0f38" stroke="#facc15" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Antena Receptora WiMAX CPE</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.17',
+                code: 'IEEE 802.17',
+                category: 'MAN',
+                title: 'Anillo de Paquete Elástico (RPR)',
+                subtitle: 'Resilient Packet Ring',
+                desc: 'Optimiza el tráfico de paquetes de datos sobre anillos de fibra óptica metropolitanos con conmutación de protección súper rápida (<50 ms).',
+                analogy: 'Un tren de alta velocidad en anillo alrededor de la ciudad que, si detecta una vía rota, invierte la marcha en menos de 50 milisegundos sin que los pasajeros lo noten.',
+                hardwareName: 'Switches Metro Ethernet de Fibra en Anillo RPR',
+                examKey: 'Conmutación de protección de anillo en menos de 50 ms ante el corte de fibra.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <circle cx="300" cy="80" r="50" fill="none" stroke="#4ade80" stroke-width="4"/>
+                        <text x="300" y="85" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Anillo RPR Rápido</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="30" width="300" height="100" rx="8" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Switch Metro-Ethernet RPR 10G</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.20',
+                code: 'IEEE 802.20',
+                category: 'Especiales',
+                title: 'Acceso Móvil en Alta Velocidad (MBWA)',
+                subtitle: 'Mobile Broadband Wireless Access',
+                desc: 'Diseñado para mantener conexiones de banda ancha de alta velocidad en vehículos y trenes a velocidades de hasta 250 km/h.',
+                analogy: 'Ver una película en streaming 4K desde el tren AVE a 300 km/h sin sufrir cortes ni interrupciones.',
+                hardwareName: 'Módems de Banda Ancha Móvil Vehicular',
+                examKey: 'Optimizado para redes IP móviles a altas velocidades de desplazamiento.',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="180" y="60" width="140" height="40" rx="8" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="250" y="85" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">Tren AVE (250 km/h)</text>
+                        <line x1="330" y1="80" x2="450" y2="40" stroke="#facc15" stroke-width="3" stroke-dasharray="4,4"/>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="30" width="300" height="100" rx="8" fill="#1c0f38" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Módem Módem MBWA Vehicular</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.21',
+                code: 'IEEE 802.21',
+                category: 'Especiales',
+                title: 'Media Independent Handoff (MIH)',
+                subtitle: 'Traspaso Transparente entre Redes Heterogéneas',
+                desc: 'Permite el cambio transparente (handover) entre Wi-Fi, Ethernet, WiMAX y redes móviles 4G/5G sin cortar las llamadas o descargas.',
+                analogy: 'Entrar a tu casa hablando por videollamada; el móvil pasa de usar los datos 5G al Wi-Fi de tu router de forma transparente sin colgar la llamada.',
+                hardwareName: 'Controlador de Conectividad Multinodo en Smartphones / Laptops',
+                examKey: 'Proporciona roaming intertecnológico transparente (p. ej. Wi-Fi <-> Celular 4G/5G).',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <text x="150" y="80" fill="#38bdf8" font-size="13" font-weight="bold">802.11 Wi-Fi</text>
+                        <text x="300" y="80" fill="#c084fc" font-size="15" font-weight="bold">&#8523; MIH &#8522;</text>
+                        <text x="450" y="80" fill="#4ade80" font-size="13" font-weight="bold">Red Celular 5G</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="30" width="300" height="100" rx="8" fill="#1c0f38" stroke="#c084fc" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Chipset Multirradio (Wi-Fi + LTE/5G)</text>
+                    </svg>
+                `
+            },
+            {
+                id: '802.22',
+                code: 'IEEE 802.22',
+                category: 'MAN',
+                title: 'Redes WRAN (Espacios Blancos de TV)',
+                subtitle: 'Wireless Regional Area Network',
+                desc: 'Utiliza frecuencias no utilizadas de canales de Televisión analógica (Espacios Blancos de TV / TV White Spaces) con Radio Cognitiva para cobertura rural lejana.',
+                analogy: 'Sintonizar un canal de televisión analógico vacío en el campo y usar ese canal de radio para transmitir internet a caseríos alejados a 100 km.',
+                hardwareName: 'Estaciones de Radio Cognitiva de Banda TV VHF/UHF',
+                examKey: 'Utiliza tecnología de Radio Cognitiva en las frecuencias libres de televisión (TV White Spaces).',
+                diagramSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="100" y="50" width="400" height="60" rx="8" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="85" fill="#4ade80" font-size="13" font-weight="bold" text-anchor="middle">Canales de TV Libres (VHF/UHF White Spaces)</text>
+                    </svg>
+                `,
+                hardwareSvg: `
+                    <svg viewBox="0 0 600 160" class="w-full h-auto bg-cyberBg rounded-xl border border-cyberBorder p-2">
+                        <rect x="150" y="30" width="300" height="100" rx="8" fill="#1c0f38" stroke="#4ade80" stroke-width="2"/>
+                        <text x="300" y="80" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">Estación WRAN de Radio Cognitiva</text>
+                    </svg>
+                `
+            }
+        ];
+
+        const layerInfo = {
+            'layer3': {
+                title: 'Capa 3: Red (Network Layer)',
+                badge: 'Software / Pila Protocolo SO',
+                badgeColor: 'bg-accentPurple/20 text-accentPurple border-accentPurple/40',
+                location: 'Sistema Operativo (Software / Pila TCP/IP)',
+                stdAssigned: 'Protocolo IP (IPv4, IPv6), ICMP, Routers',
+                functions: [
+                    'Direccionamiento lógico único global (Direcciones IP).',
+                    'Determinación de rutas y enrutamiento entre redes distintas.',
+                    'Empaquetamiento de datos en Paquetes IP.'
+                ],
+                examTip: 'La Capa 3 no entiende de cables o Wi-Fi; solo entiende de direcciones IP. Requiere de la Subcapa LLC (802.2) para enviar sus paquetes al hardware.'
+            },
+            'llc': {
+                title: 'Subcapa LLC: Logical Link Control (IEEE 802.2)',
+                badge: 'Software / Driver del Sistema Operativo',
+                badgeColor: 'bg-accentCyan/20 text-accentCyan border-accentCyan/40',
+                location: 'Driver de Tarjeta de Red (Software en SO)',
+                stdAssigned: 'IEEE 802.2 (Único e idéntico para todos)',
+                functions: [
+                    'Proporciona una interfaz UNIFORME a la Capa 3 (IP), independizando la red del medio físico.',
+                    'Multiplexación mediante cabeceras DSAP (Destination Service Access Point) y SSAP.',
+                    'Control de flujo opcional y gestión de enlaces (Tipo 1 sin conexión / Tipo 2 con conexión).'
+                ],
+                examTip: 'PREGUNTA CLAVE DE EXAMEN: La subcapa LLC es idéntica tanto si usas Ethernet, Wi-Fi o Bluetooth. Se ejecuta siempre en SOFTWARE (Driver).'
+            },
+            'mac': {
+                title: 'Subcapa MAC: Media Access Control (IEEE 802.3, 802.11...)',
+                badge: 'Hardware / Chipset Tarjeta de Red (NIC)',
+                badgeColor: 'bg-accentGreen/20 text-accentGreen border-accentGreen/40',
+                location: 'Hardware / Chipset de la Tarjeta de Red (NIC)',
+                stdAssigned: 'IEEE 802.3 (Ethernet), 802.11 (Wi-Fi), 802.15 (Bluetooth)...',
+                functions: [
+                    'Direccionamiento Físico (Dirección MAC grabada en la memoria ROM/EEPROM del hardware).',
+                    'Ensamble de tramas (Delimitación del principio y fin del paquete).',
+                    'Método de acceso al medio compartido (CSMA/CD en Ethernet, CSMA/CA en Wi-Fi, Token Passing).',
+                    'Detección de errores mediante CRC (Cyclic Redundancy Check) o FCS.'
+                ],
+                examTip: 'La subcapa MAC es ESPECÍFICA de cada tecnología física y reside en el HARDWARE de la tarjeta de red.'
+            },
+            'layer1': {
+                title: 'Capa 1: Física (Physical Layer)',
+                badge: 'Medio Físico y Señalización',
+                badgeColor: 'bg-accentYellow/20 text-accentYellow border-accentYellow/40',
+                location: 'Cables, Conectores, Transceptores y Antenas',
+                stdAssigned: 'Especificaciones PHY (1000BASE-T, 10GBASE-SR, 802.11ax RF)',
+                functions: [
+                    'Transmisión de codificación de bits puros (0s y 1s) como impulsos eléctricos, de luz o radiofrecuencia.',
+                    'Especificaciones mecánicas de conectores (RJ45, LC/SC, BNC) y cables (Cat6a, Fibra Monomodo).',
+                    'Modulación de onda y frecuencias (2.4 GHz, 5 GHz).'
+                ],
+                examTip: 'La Capa 1 solo conoce voltajes, fotones o RF. No entiende el concepto de dirección MAC ni de trama.'
+            }
+        };
+
+        const frameInfo = {
+            'mac-dest': {
+                title: 'Dirección MAC Destino',
+                size: '6 Bytes (48 Bits)',
+                sublayer: 'Subcapa MAC (Hardware)',
+                desc: 'Dirección física del equipo receptor en la red local. Si va dirigido a todos los equipos, tomará el valor de Broadcast: FF:FF:FF:FF:FF:FF.',
+                example: '00:1A:2B:3C:4D:5E'
+            },
+            'mac-orig': {
+                title: 'Dirección MAC Origen',
+                size: '6 Bytes (48 Bits)',
+                sublayer: 'Subcapa MAC (Hardware)',
+                desc: 'Dirección física del equipo que emite la trama, grabada en la memoria ROM/EEPROM de su tarjeta de red (NIC).',
+                example: 'A4:5E:60:12:34:99'
+            },
+            'llc-header': {
+                title: 'Cabecera LLC (IEEE 802.2)',
+                size: '3 a 4 Bytes',
+                sublayer: 'Subcapa LLC (Software / Driver)',
+                desc: 'Contiene los campos DSAP (Destination Service Access Point), SSAP (Source Service Access Point) y Control. Indican a qué protocolo superior de Capa 3 (ej. IP) deben entregarse los datos.',
+                example: 'DSAP: 0x06 (IP), SSAP: 0x06, Control: 0x03'
+            },
+            'payload': {
+                title: 'Datos IP / Carga Útil (Payload)',
+                size: '46 a 1500 Bytes (Ethernet estándar)',
+                sublayer: 'Capa 3 / Capas Superiores',
+                desc: 'El paquete de capa 3 IP empaquetado. Si los datos son menores a 46 bytes, la subcapa MAC añade bytes de relleno (Padding) para alcanzar el mínimo de trama (64 bytes totales).',
+                example: 'Paquete IP + Cabeceras TCP/UDP + Datos de Aplicación HTTP/DNS'
+            },
+            'crc': {
+                title: 'CRC / FCS (Frame Check Sequence)',
+                size: '4 Bytes (32 Bits)',
+                sublayer: 'Subcapa MAC (Hardware)',
+                desc: 'Secuencia de Comprobación de Trama mediante algoritmo polinómico CRC-32. Si el cálculo del receptor no coincide con este valor, la trama corrupta se descarta en la NIC.',
+                example: '0x8F3A21C0'
+            }
+        };
+
+        const quizQuestions = [
+            {
+                q: "1. ¿En qué lugar del equipo informático se ejecuta la Subcapa LLC (IEEE 802.2)?",
+                options: [
+                    "En los chips de silicio de la tarjeta de red (NIC)",
+                    "En el software/controlador (driver) del sistema operativo",
+                    "En el conector físico RJ45",
+                    "En la memoria caché del router principal"
+                ],
+                correct: 1,
+                explain: "La subcapa LLC (IEEE 802.2) se ejecuta en SOFTWARE mediante el driver del Sistema Operativo, proporcionando una interfaz común e independiente del medio físico."
+            },
+            {
+                q: "2. ¿Cuál es la diferencia clave entre CSMA/CD (802.3) y CSMA/CA (802.11)?",
+                options: [
+                    "CSMA/CD detecta colisiones mientras transmite; CSMA/CA las evita activamente antes de transmitir",
+                    "CSMA/CA usa cables de fibra óptica y CSMA/CD usa antenas",
+                    "CSMA/CD es exclusivo de la subcapa LLC y CSMA/CA de la capa 3",
+                    "Ambos protocolos son totalmente idénticos"
+                ],
+                correct: 0,
+                explain: "Ethernet cableado usa CSMA/CD (Collision Detection) para detectar colisiones. Wi-Fi usa CSMA/CA (Collision Avoidance) porque las tarjetas de radio no pueden escuchar mientras transmiten."
+            },
+            {
+                q: "3. El estándar IEEE 802.1Q introduce un cambio crucial en la trama Ethernet. ¿En qué consiste?",
+                options: [
+                    "Elimina la subcapa MAC para acelerar la red",
+                    "Inserta una etiqueta de 4 bytes para identificar la VLAN a la que pertenece la trama",
+                    "Duplica la dirección MAC de origen",
+                    "Cifra la red con claves AES-256 en hardware"
+                ],
+                correct: 1,
+                explain: "IEEE 802.1Q añade un tag de 4 Bytes dentro de la cabecera Ethernet para permitir el etiquetado de VLANs en enlaces troncales (Trunks)."
+            },
+            {
+                q: "4. ¿Qué ventaja principal ofrece el método de acceso de Token Ring (IEEE 802.5) frente a Ethernet (IEEE 802.3)?",
+                options: [
+                    "Es un método determinista y libre de colisiones mediante el paso de un testigo",
+                    "Alcanza velocidades de 100 Gigabits por segundo",
+                    "No requiere tarjetas de red ni cables",
+                    "Es compatible con redes Wi-Fi de forma nativa"
+                ],
+                correct: 0,
+                explain: "Token Ring es un sistema DETERMINISTA: como solo puede transmitir quien tiene el 'Token', jamás ocurren colisiones de red."
+            },
+            {
+                q: "5. ¿Qué mecanismo del estándar IEEE 802.11 resuelve el 'Problema del Nodo Oculto' en redes Wi-Fi?",
+                options: [
+                    "El uso de conectores RJ45 apantallados STP",
+                    "El intercambio previo de tramas de control RTS (Request to Send) y CTS (Clear to Send)",
+                    "El protocolo Spanning Tree (802.1D)",
+                    "El cambio automático al estándar IEEE 802.22"
+                ],
+                correct: 1,
+                explain: "Las tramas RTS/CTS reservan el medio inalámbrico con el Punto de Acceso antes de enviar datos, evitando que dos clientes que no se ven entre sí colisionen."
+            },
+            {
+                q: "6. ¿Por qué la subcapa LLC (IEEE 802.2) independiza las capas superiores de la tecnología física de red?",
+                options: [
+                    "Porque asigna las direcciones IP dinámicas por DHCP",
+                    "Porque ofrece un formato de cabecera idéntico (DSAP/SSAP) a la Capa 3 sin importar si el medio es cable, fibra o Wi-Fi",
+                    "Porque convierte voltajes eléctricos en luz infrarroja",
+                    "Porque repara los cables fisicamente dañados"
+                ],
+                correct: 1,
+                explain: "LLC actúa como traductor universal. La Capa 3 (IP) habla siempre con LLC en software de forma idéntica, independientemente de si por debajo hay Ethernet, Wi-Fi o Bluetooth."
+            }
+        ];
+
+        // Global State variables
+        let activeFilter = 'all';
+        let currentModalStandard = null;
+        let activeModalTab = 'tab-diagram';
+        let userQuizAnswers = {};
+
+        window.onload = function() {
+            // Render default layer panel
+            selectLayer('llc');
+            
+            // Render default frame panel
+            selectFramePart('llc-header');
+
+            // Render 16 standards cards
+            renderStandardsGrid();
+
+            // Render quiz questions
+            renderQuiz();
+        };
+
+        function selectLayer(layerKey) {
+            // Update active layer buttons UI
+            document.querySelectorAll('.layer-btn').forEach(btn => {
+                btn.classList.remove('layer-active');
+            });
+            const selectedBtn = document.getElementById(`btn-${layerKey}`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('layer-active');
+            }
+
+            // Populate Layer detail container
+            const data = layerInfo[layerKey];
+            const container = document.getElementById('layer-detail-container');
+
+            let functionsListHTML = data.functions.map(f => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-accentGreen mt-1 text-xs"></i><span>${f}</span></li>`).join('');
+
+            container.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 text-xs font-extrabold rounded-md ${data.badgeColor} border">${data.badge}</span>
+                        <span class="text-xs text-subContrastText font-mono"><i class="fa-solid fa-microchip mr-1"></i>${data.location}</span>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-white mb-2">${data.title}</h3>
+                    <div class="text-xs font-mono text-accentYellow bg-cyberCard px-3 py-1.5 rounded-lg border border-cyberBorder mb-4">
+                        <strong class="text-white">Asignación Estándar:</strong> ${data.stdAssigned}
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-subContrastText uppercase tracking-wider">Funciones Principales en 1º ASIR:</h4>
+                        <ul class="text-sm space-y-2 text-lavenderText">
+                            ${functionsListHTML}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-3.5 rounded-xl bg-accentPurple/10 border border-accentPurple/30 flex items-start gap-3">
+                    <i class="fa-solid fa-lightbulb text-accentPurple text-lg mt-0.5"></i>
+                    <div>
+                        <span class="block text-xs font-bold text-accentPurple uppercase">Clave para el Examen PAR:</span>
+                        <p class="text-xs text-lavenderText">${data.examTip}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectFramePart(partKey) {
+            // Reset frame buttons UI
+            document.querySelectorAll('.frame-part-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-white', 'scale-105');
+            });
+            const selectedBtn = document.getElementById(`frame-${partKey}`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('ring-2', 'ring-white');
+            }
+
+            const data = frameInfo[partKey];
+            const container = document.getElementById('frame-inspector-detail');
+
+            container.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-cyberBorder">
+                    <div>
+                        <span class="text-xs font-bold text-accentCyan uppercase tracking-wider">${data.sublayer}</span>
+                        <h3 class="text-lg font-extrabold text-white">${data.title}</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 bg-cyberCard border border-cyberBorder rounded-lg text-xs font-mono text-accentYellow font-bold">Tamaño: ${data.size}</span>
+                    </div>
+                </div>
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2 space-y-1">
+                        <span class="text-xs font-bold text-subContrastText uppercase">Descripción Técnica:</span>
+                        <p class="text-sm text-lavenderText">${data.desc}</p>
+                    </div>
+                    <div class="bg-cyberCard p-3 rounded-lg border border-cyberBorder space-y-1">
+                        <span class="text-xs font-bold text-accentGreen uppercase">Valor de Ejemplo:</span>
+                        <code class="block text-xs font-mono text-white break-all">${data.example}</code>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStandardsGrid() {
+            const container = document.getElementById('standards-grid');
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+            const filtered = standardsData.filter(item => {
+                const matchesCategory = (activeFilter === 'all') || (item.category === activeFilter);
+                const matchesSearch = item.code.toLowerCase().includes(query) ||
+                                      item.title.toLowerCase().includes(query) ||
+                                      item.desc.toLowerCase().includes(query) ||
+                                      item.analogy.toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full p-8 text-center bg-cyberCard rounded-xl border border-cyberBorder text-subContrastText">
+                        <i class="fa-solid fa-magnifying-glass text-3xl mb-2 text-cyberBorder"></i>
+                        <p>No se encontraron estándares que coincidan con la búsqueda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div onclick="openModal('${item.id}')" class="bg-cyberCard rounded-xl border-2 border-cyberBorder hover:border-accentCyan p-5 transition-all duration-200 hover:-translate-y-1 cursor-pointer flex flex-col justify-between group shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-md bg-accentCyan/20 text-accentCyan border border-accentCyan/30 font-mono font-bold text-xs">
+                                ${item.code}
+                            </span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyberBorder text-subContrastText">
+                                ${item.category}
+                            </span>
+                        </div>
+                        <h3 class="text-base font-bold text-white group-hover:text-accentCyan transition mb-1 line-clamp-1">
+                            ${item.title}
+                        </h3>
+                        <p class="text-xs text-subContrastText mb-3 font-medium">
+                            ${item.subtitle}
+                        </p>
+                        <p class="text-xs text-lavenderText line-clamp-3 mb-4">
+                            ${item.desc}
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-cyberBorder flex items-center justify-between text-xs text-accentCyan font-bold group-hover:translate-x-1 transition">
+                        <span>Ver Ficha Técnica (4 Pestañas)</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterStandards() {
+            renderStandardsGrid();
+        }
+
+        function setFilterCategory(cat) {
+            activeFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-accentCyan', 'text-black', 'font-bold');
+                btn.classList.add('bg-cyberCard', 'text-lavenderText');
+            });
+            const activeBtn = document.getElementById(`filter-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-cyberCard', 'text-lavenderText');
+                activeBtn.classList.add('bg-accentCyan', 'text-black', 'font-bold');
+            }
+            renderStandardsGrid();
+        }
+
+        function openModal(id) {
+            const item = standardsData.find(s => s.id === id);
+            if (!item) return;
+
+            currentModalStandard = item;
+            document.getElementById('modal-badge').innerText = item.code;
+            document.getElementById('modal-title').innerText = item.title;
+
+            // Reset active tab to tab-diagram
+            switchTab('tab-diagram');
+
+            document.getElementById('standard-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('standard-modal').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            activeModalTab = tabId;
+
+            // Highlight active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+            });
+            const btn = document.getElementById(`btn-${tabId}`);
+            if (btn) btn.classList.add('tab-active');
+
+            const item = currentModalStandard;
+            if (!item) return;
+
+            const body = document.getElementById('modal-body');
+
+            if (tabId === 'tab-diagram') {
+                body.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-accentCyan uppercase">Esquema Técnico Vectorial SVG</h4>
+                            <span class="text-xs text-subContrastText">Flujo paso a paso</span>
+                        </div>
+                        ${item.diagramSvg}
+                        <div class="p-4 rounded-xl bg-cyberBg border border-cyberBorder text-xs text-lavenderText">
+                            <strong class="text-white block mb-1">Resumen del Funcionamiento:</strong>
+                            ${item.desc}
+                        </div>
+                    </div>
+                `;
+            } else if (tabId === 'tab-hardware') {
+                body.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-accentGreen uppercase">Hardware y Dispositivo Real</h4>
+                            <span class="text-xs font-mono text-accentYellow">${item.hardwareName}</span>
+                        </div>
+                        ${item.hardwareSvg}
+                        <div class="p-4 rounded-xl bg-cyberBg border border-cyberBorder text-xs text-lavenderText">
+                            <strong class="text-white block mb-1">Dispositivo Físico en Laboratorio ASIR:</strong>
+                            ${item.hardwareName}. Este componente se encarga de implementar las especificaciones de Capa Física y Subcapa MAC de la norma ${item.code}.
+                        </div>
+                    </div>
+                `;
+            } else if (tabId === 'tab-analogy') {
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-2xl bg-cyberBg border-2 border-accentYellow/40 space-y-3">
+                            <div class="flex items-center gap-2 text-accentYellow font-bold text-sm">
+                                <i class="fa-solid fa-lightbulb text-lg"></i>
+                                <span>Analogía Sencilla para Memorizar</span>
+                            </div>
+                            <p class="text-sm leading-relaxed text-white">
+                                "${item.analogy}"
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-cyberCard border border-cyberBorder text-xs text-subContrastText">
+                            <strong class="text-white block mb-1">¿Por qué ayuda esta analogía?</strong>
+                            Te permite visualizar de forma intuitiva el comportamiento abstracto de las tramas y medios compartidos sin memorizar definiciones secas.
+                        </div>
+                    </div>
+                `;
+            } else if (tabId === 'tab-exam') {
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-2xl bg-accentPurple/10 border-2 border-accentPurple/40 space-y-3">
+                            <div class="flex items-center gap-2 text-accentPurple font-bold text-sm">
+                                <i class="fa-solid fa-graduation-cap text-lg"></i>
+                                <span>Trampas y Claves Frecuentes de Examen PAR</span>
+                            </div>
+                            <p class="text-sm font-semibold text-white leading-relaxed">
+                                ${item.examKey}
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3 bg-cyberBg rounded-lg border border-cyberBorder">
+                                <span class="text-accentCyan font-bold block mb-1">Subcapa LLC (802.2)</span>
+                                <span class="text-subContrastText">¿Afecta a este estándar? Sí, se encapsula con la cabecera idéntica LLC en Software.</span>
+                            </div>
+                            <div class="p-3 bg-cyberBg rounded-lg border border-cyberBorder">
+                                <span class="text-accentGreen font-bold block mb-1">Subcapa MAC</span>
+                                <span class="text-subContrastText">Específica de ${item.code}. Define el formato de trama y método de acceso.</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+
+            container.innerHTML = quizQuestions.map((q, qIndex) => `
+                <div class="p-5 bg-cyberBg rounded-xl border border-cyberBorder space-y-3">
+                    <h4 class="font-bold text-sm sm:text-base text-white">${q.q}</h4>
+                    <div class="space-y-2">
+                        ${q.options.map((opt, oIndex) => `
+                            <label class="flex items-center gap-3 p-3 rounded-lg bg-cyberCard border border-cyberBorder hover:border-accentPurple transition cursor-pointer text-xs sm:text-sm text-lavenderText">
+                                <input type="radio" name="question-${qIndex}" value="${oIndex}" onchange="recordAnswer(${qIndex}, ${oIndex})" class="accent-accentPurple w-4 h-4">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="explain-${qIndex}" class="hidden p-3 rounded-lg text-xs"></div>
+                </div>
+            `).join('') + `
+                <div class="text-center pt-4">
+                    <button onclick="submitQuiz()" class="px-8 py-3 rounded-xl bg-accentGreen hover:bg-green-500 text-black font-extrabold text-base transition shadow-lg">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> Corregir Test de Examen
+                    </button>
+                </div>
+            `;
+        }
+
+        function recordAnswer(qIndex, oIndex) {
+            userQuizAnswers[qIndex] = oIndex;
+        }
+
+        function submitQuiz() {
+            let score = 0;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const selected = userQuizAnswers[qIndex];
+                const explainBox = document.getElementById(`explain-${qIndex}`);
+                explainBox.classList.remove('hidden');
+
+                if (selected === q.correct) {
+                    score++;
+                    explainBox.className = "p-3 rounded-lg text-xs bg-accentGreen/10 border border-accentGreen/40 text-accentGreen mt-2";
+                    explainBox.innerHTML = `<strong>¡Correcto!</strong> ${q.explain}`;
+                } else {
+                    explainBox.className = "p-3 rounded-lg text-xs bg-red-500/10 border border-red-500/40 text-red-300 mt-2";
+                    explainBox.innerHTML = `<strong>Incorrecto.</strong> ${q.explain}`;
+                }
+            });
+
+            // Display Score Summary
+            const resultsBox = document.getElementById('quiz-results');
+            resultsBox.classList.remove('hidden');
+            
+            document.getElementById('score-text').innerText = `${score} / ${quizQuestions.length}`;
+            
+            const feedback = document.getElementById('feedback-text');
+            if (score === 6) {
+                feedback.innerText = "¡Excelente! Dominas perfectamente la arquitectura IEEE 802 y las subcapas LLC/MAC para el examen de PAR.";
+            } else if (score >= 4) {
+                feedback.innerText = "¡Buen trabajo! Tienes claros los conceptos principales, revisa los fallos para afianzar el 10.";
+            } else {
+                feedback.innerText = "Necesitas repasar la ubicación de las subcapas LLC/MAC y las diferencias entre CSMA/CD y CSMA/CA.";
+            }
+
+            resultsBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            userQuizAnswers = {};
+            document.getElementById('quiz-results').classList.add('hidden');
+            renderQuiz();
+            document.getElementById('exam-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
