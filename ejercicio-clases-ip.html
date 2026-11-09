@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejercicio: clases de direcciones IP (A, B y C) · UD2</title>
+  <style>
+    :root {
+      --bg-main: #0a0512;
+      --bg-card: #150a26;
+      --bg-card-hover: #22103e;
+      --border-color: #3b1b6e;
+      --border-active: #8b5cf6;
+      --text-primary: #ffffff;
+      --text-secondary: #c084fc;
+      --text-muted: #a78bfa;
+      --accent: #8b5cf6;
+      --accent-light: #d8b4fe;
+      --ok: #4ade80;
+      --ok-bg: rgba(34, 197, 94, 0.12);
+      --ok-border: rgba(34, 197, 94, 0.45);
+      --ko: #fb923c;
+      --ko-bg: rgba(249, 115, 22, 0.12);
+      --ko-border: rgba(249, 115, 22, 0.5);
+      --mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 900px; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.95rem; font-weight: 600;
+      margin-bottom: 30px; padding: 8px 16px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color); border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover { background-color: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+
+    header { margin-bottom: 28px; }
+    .badge-unit {
+      display: inline-block; background-color: #2e1065; color: var(--accent-light);
+      padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 15px; border: 1px solid var(--border-color);
+    }
+    header h1 { font-size: 2.2rem; line-height: 1.3; margin-bottom: 10px; }
+    header p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6; max-width: 70ch; }
+
+    /* Tabla de referencia */
+    .ref {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin-bottom: 28px;
+    }
+    .ref-item {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 14px 18px;
+    }
+    .ref-item strong { display: block; font-size: 1.15rem; margin-bottom: 4px; }
+    .ref-item span { color: var(--text-muted); font-size: 0.95rem; }
+    .ref-item code { font-family: var(--mono); color: var(--accent-light); }
+    .ref.hidden { display: none; }
+
+    /* Barra de estado */
+    .toolbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .score { font-size: 1.05rem; color: var(--text-secondary); }
+    .score b { color: var(--text-primary); font-size: 1.3rem; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .btn {
+      font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      padding: 8px 16px; border-radius: 20px;
+      background: var(--bg-card); color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .btn:hover { background: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover { background: #7c3aed; }
+    .btn:focus-visible, .opt:focus-visible, .back-btn:focus-visible { outline: 3px solid var(--accent-light); outline-offset: 2px; }
+
+    /* Lista de direcciones */
+    .list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .row {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 14px; padding: 14px 18px;
+      display: grid; grid-template-columns: 2.2rem 1fr auto; align-items: center; gap: 14px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .row.ok { border-color: var(--ok-border); background: linear-gradient(90deg, var(--ok-bg), var(--bg-card) 60%); }
+    .row.ko { border-color: var(--ko-border); background: linear-gradient(90deg, var(--ko-bg), var(--bg-card) 60%); }
+    .num { color: var(--text-muted); font-weight: 600; }
+    .ip { font-family: var(--mono); font-size: 1.35rem; letter-spacing: 0.5px; }
+    .ip .oct1 { color: var(--accent-light); font-weight: 700; }
+
+    .opts { display: flex; gap: 8px; }
+    .opt {
+      font: inherit; font-weight: 700; font-size: 1.05rem; cursor: pointer;
+      width: 3rem; height: 3rem; border-radius: 12px;
+      background: #1d0e36; color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .opt:hover:not(:disabled) { border-color: var(--border-active); background: var(--bg-card-hover); }
+    .opt:disabled { cursor: default; opacity: 0.45; }
+    .opt.chosen.right, .opt.right { opacity: 1; background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+    .opt.chosen.wrong { opacity: 1; background: var(--ko-bg); border-color: var(--ko); color: var(--ko); }
+
+    .explain {
+      grid-column: 2 / -1; font-size: 0.95rem; line-height: 1.6; color: var(--accent-light);
+      display: none;
+    }
+    .row.ok .explain, .row.ko .explain { display: block; }
+    .explain .bits { font-family: var(--mono); color: var(--text-muted); }
+    .explain .bits mark { background: none; color: var(--text-primary); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .explain .verdict-ok { color: var(--ok); font-weight: 700; }
+    .explain .verdict-ko { color: var(--ko); font-weight: 700; }
+
+    .final {
+      margin-top: 20px; padding: 18px 22px; border-radius: 14px;
+      background: #1d0e36; border: 1px solid var(--border-active);
+      display: none; line-height: 1.6;
+    }
+    .final.show { display: block; }
+    .final strong { font-size: 1.15rem; }
+
+    footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.7rem; }
+      .ref { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1.6rem 1fr; }
+      .opts { grid-column: 1 / -1; }
+      .opt { flex: 1; }
+      .explain { grid-column: 1 / -1; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="ud2.html" class="back-btn">&larr; Volver a la Unidad 2</a>
+
+    <header>
+      <span class="badge-unit">Unidad Didáctica 2 · Ejercicio</span>
+      <h1>Clasifica las direcciones IP: clase A, B o C</h1>
+      <p>Pulsa la clase a la que pertenece cada dirección. Para saberlo basta con mirar el primer octeto. Al responder verás la corrección y los primeros bits en binario.</p>
+    </header>
+
+    <section class="ref" id="ref" aria-label="Rangos de cada clase">
+      <div class="ref-item"><strong>Clase A</strong><span>Primer octeto <code>1 – 126</code><br>Empieza por <code>0</code></span></div>
+      <div class="ref-item"><strong>Clase B</strong><span>Primer octeto <code>128 – 191</code><br>Empieza por <code>10</code></span></div>
+      <div class="ref-item"><strong>Clase C</strong><span>Primer octeto <code>192 – 223</code><br>Empieza por <code>110</code></span></div>
+    </section>
+
+    <div class="toolbar">
+      <p class="score" aria-live="polite"><b id="hits">0</b> aciertos de <span id="done">0</span> respondidas (<span id="total">12</span> en total)</p>
+      <div class="toolbar-actions">
+        <button class="btn" id="toggleRef" aria-pressed="false">Ocultar rangos</button>
+        <button class="btn" id="showAll">Ver soluciones</button>
+        <button class="btn primary" id="newRound">Nuevas direcciones</button>
+      </div>
+    </div>
+
+    <ol class="list" id="list"></ol>
+
+    <div class="final" id="final" role="status" aria-live="polite"></div>
+
+    <footer>
+      <p>&copy; Planificación y administración de redes · 1º ASIR</p>
+    </footer>
+  </div>
+
+  <script>
+    // Primera ronda: las mismas direcciones que el ejercicio de la presentación de la UD2
+    const FIRST_ROUND = [
+      '10.25.3.1', '172.16.40.7', '192.168.1.20', '126.200.4.9', '128.0.10.5', '223.15.8.100',
+      '64.33.12.250', '191.255.0.33', '200.100.50.25', '1.2.3.4', '150.75.200.1', '213.45.6.78'
+    ];
+    const RANGES = { A: '1 – 126', B: '128 – 191', C: '192 – 223' };
+    const PREFIX = { A: 1, B: 2, C: 3 }; // bits iniciales que identifican la clase
+
+    const listEl = document.getElementById('list');
+    const hitsEl = document.getElementById('hits');
+    const doneEl = document.getElementById('done');
+    const totalEl = document.getElementById('total');
+    const finalEl = document.getElementById('final');
+
+    let items = [];
+
+    function classOf(ip) {
+      const o = Number(ip.split('.')[0]);
+      if (o >= 1 && o <= 126) return 'A';
+      if (o >= 128 && o <= 191) return 'B';
+      if (o >= 192 && o <= 223) return 'C';
+      return null;
+    }
+
+    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function randomRound() {
+      // 4 de cada clase, incluyendo siempre algún valor límite, en orden aleatorio
+      const edges = { A: [1, 126], B: [128, 191], C: [192, 223] };
+      const out = [];
+      for (const c of ['A', 'B', 'C']) {
+        const [lo, hi] = edges[c];
+        const firsts = new Set([Math.random() < 0.5 ? lo : hi]);
+        while (firsts.size < 4) firsts.add(rnd(lo, hi));
+        for (const f of firsts) out.push(`${f}.${rnd(0, 255)}.${rnd(0, 255)}.${rnd(1, 254)}`);
+      }
+      for (let i = out.length - 1; i > 0; i--) { const j = rnd(0, i); [out[i], out[j]] = [out[j], out[i]]; }
+      return out;
+    }
+
+    function bitsHtml(octet, cls) {
+      const b = octet.toString(2).padStart(8, '0');
+      const n = PREFIX[cls];
+      return `<span class="bits"><mark>${b.slice(0, n)}</mark>${b.slice(n)}</span>`;
+    }
+
+    function render(ips) {
+      items = ips.map(ip => ({ ip, cls: classOf(ip), answer: null }));
+      listEl.innerHTML = '';
+      finalEl.classList.remove('show');
+      items.forEach((it, i) => {
+        const [o1, ...rest] = it.ip.split('.');
+        const li = document.createElement('li');
+        li.className = 'row';
+        li.innerHTML = `
+          <span class="num">${i + 1}</span>
+          <span class="ip" aria-label="Dirección ${it.ip}"><span class="oct1">${o1}</span>.${rest.join('.')}</span>
+          <div class="opts" role="group" aria-label="Clase de ${it.ip}">
+            ${['A', 'B', 'C'].map(c => `<button class="opt" data-c="${c}" aria-label="Clase ${c}">${c}</button>`).join('')}
+          </div>
+          <p class="explain"></p>`;
+        li.querySelectorAll('.opt').forEach(btn => btn.addEventListener('click', () => answer(i, btn.dataset.c)));
+        listEl.appendChild(li);
+      });
+      totalEl.textContent = items.length;
+      updateScore();
+    }
+
+    function answer(i, chosen, revealOnly = false) {
+      const it = items[i];
+      if (it.answer !== null) return;
+      it.answer = revealOnly ? 'reveal' : chosen;
+      const li = listEl.children[i];
+      const ok = !revealOnly && chosen === it.cls;
+      li.classList.add(ok ? 'ok' : 'ko');
+      li.querySelectorAll('.opt').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.c === it.cls) b.classList.add('right');
+        if (b.dataset.c === chosen) b.classList.add('chosen', ok ? 'right' : 'wrong');
+      });
+      const o1 = Number(it.ip.split('.')[0]);
+      const verdict = revealOnly ? '' :
+        ok ? '<span class="verdict-ok">Correcto.</span> ' : `<span class="verdict-ko">No es ${chosen}.</span> `;
+      li.querySelector('.explain').innerHTML =
+        `${verdict}El primer octeto es <b>${o1}</b> = ${bitsHtml(o1, it.cls)}, dentro de ${RANGES[it.cls]}: <b>clase ${it.cls}</b>.`;
+      updateScore();
+    }
+
+    function updateScore() {
+      const answered = items.filter(it => it.answer !== null);
+      const hits = items.filter(it => it.answer === it.cls).length;
+      hitsEl.textContent = hits;
+      doneEl.textContent = answered.length;
+      if (answered.length === items.length && items.length) {
+        const revealed = items.some(it => it.answer === 'reveal');
+        const msg = hits === items.length
+          ? '¡Todas correctas! Prueba con «Nuevas direcciones» o intenta ocultar los rangos.'
+          : hits >= items.length * 0.75
+            ? 'Muy bien. Revisa las que fallaste: suelen ser los valores límite (126, 128, 191, 192, 223).'
+            : 'Repasa la tabla de rangos y vuelve a intentarlo con nuevas direcciones.';
+        finalEl.innerHTML = `<strong>${hits} de ${items.length} correctas.</strong> ${revealed ? 'Has consultado las soluciones.' : msg}`;
+        finalEl.classList.add('show');
+      }
+    }
+
+    document.getElementById('newRound').addEventListener('click', () => render(randomRound()));
+    document.getElementById('showAll').addEventListener('click', () => items.forEach((_, i) => answer(i, null, true)));
+    const refBtn = document.getElementById('toggleRef');
+    refBtn.addEventListener('click', () => {
+      const hidden = document.getElementById('ref').classList.toggle('hidden');
+      refBtn.textContent = hidden ? 'Mostrar rangos' : 'Ocultar rangos';
+      refBtn.setAttribute('aria-pressed', String(hidden));
+    });
+
+    render(FIRST_ROUND);
+  </script>
+</body>
+</html>
