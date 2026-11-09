@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejercicio: dirección de red y broadcast · UD2</title>
+  <style>
+    :root {
+      --bg-main: #0a0512;
+      --bg-card: #150a26;
+      --bg-card-hover: #22103e;
+      --border-color: #3b1b6e;
+      --border-active: #8b5cf6;
+      --text-primary: #ffffff;
+      --text-secondary: #c084fc;
+      --text-muted: #a78bfa;
+      --accent: #8b5cf6;
+      --accent-light: #d8b4fe;
+      --net: #7c3aed;
+      --host-bg: #2a1450;
+      --ok: #4ade80;
+      --ok-bg: rgba(34, 197, 94, 0.12);
+      --ok-border: rgba(34, 197, 94, 0.45);
+      --ko: #fb923c;
+      --ko-bg: rgba(249, 115, 22, 0.12);
+      --ko-border: rgba(249, 115, 22, 0.5);
+      --mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 900px; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.95rem; font-weight: 600;
+      margin-bottom: 30px; padding: 8px 16px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color); border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover { background-color: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+
+    header { margin-bottom: 28px; }
+    .badge-unit {
+      display: inline-block; background-color: #2e1065; color: var(--accent-light);
+      padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 15px; border: 1px solid var(--border-color);
+    }
+    header h1 { font-size: 2.2rem; line-height: 1.3; margin-bottom: 10px; }
+    header p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6; max-width: 70ch; }
+
+    /* Leyenda de colores */
+    .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; color: var(--text-secondary); font-size: 0.95rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .sw { width: 22px; height: 22px; border-radius: 6px; display: inline-block; }
+    .sw.net { background: var(--net); }
+    .sw.host { background: var(--host-bg); border: 2px dashed var(--accent-light); }
+
+    /* Teoría */
+    .ref { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+    .ref-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 18px; }
+    .ref-item strong { display: block; font-size: 1.15rem; margin-bottom: 6px; }
+    .ref-item span { color: var(--text-muted); font-size: 0.95rem; }
+    .ref-item code { font-family: var(--mono); color: var(--accent-light); }
+    .mini { display: flex; gap: 4px; margin: 8px 0; }
+    .mini i {
+      flex: 1; font-style: normal; text-align: center; font-size: 0.75rem; font-weight: 700;
+      padding: 5px 0; border-radius: 5px;
+    }
+    .mini i.n { background: var(--net); }
+    .mini i.h { background: var(--host-bg); border: 1px dashed var(--accent-light); color: var(--accent-light); }
+    .ref.hidden { display: none; }
+    .ref-hidden-note { display: none; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .ref.hidden + .ref-hidden-note { display: block; }
+
+    /* Opciones de ronda */
+    .round-opts {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 20px; padding: 12px 18px; border-radius: 14px;
+      background: #1d0e36; border: 1px dashed var(--border-color);
+    }
+    .round-label { font-weight: 700; color: var(--accent-light); }
+    .switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-secondary); font-size: 0.95rem; }
+    .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .switch .track { width: 44px; height: 24px; border-radius: 12px; background: var(--border-color); position: relative; flex: none; transition: background-color 0.2s ease; }
+    .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }
+    .switch input:checked + .track { background: var(--accent); }
+    .switch input:checked + .track::after { transform: translateX(20px); }
+    .switch input:focus-visible + .track { outline: 3px solid var(--accent-light); outline-offset: 2px; }
+
+    /* Barra */
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .score { font-size: 1.05rem; color: var(--text-secondary); }
+    .score b { color: var(--text-primary); font-size: 1.3rem; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      padding: 8px 16px; border-radius: 20px;
+      background: var(--bg-card); color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .btn:hover:not(:disabled) { background: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover:not(:disabled) { background: #7c3aed; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .btn:focus-visible, .oct:focus-visible, .back-btn:focus-visible { outline: 3px solid var(--accent-light); outline-offset: 2px; }
+
+    
+    /* Campos de respuesta */
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    .field input {
+      font-family: var(--mono); font-size: 1.05rem; color: var(--text-primary);
+      background: #1d0e36; border: 2px solid var(--border-color); border-radius: 10px;
+      padding: 8px 10px; width: 100%; min-width: 0;
+    }
+    .field input::placeholder { color: #6d5a96; }
+    .field input:focus-visible { outline: 3px solid var(--accent-light); outline-offset: 1px; border-color: var(--border-active); }
+    .field input.ok, td input.ok { border-color: var(--ok); background: var(--ok-bg); }
+    .field input.ko, td input.ko { border-color: var(--ko); background: var(--ko-bg); }
+    .fix { font-family: var(--mono); font-size: 0.85rem; color: var(--ok); min-height: 1.1em; }
+    .explain code, .final code { font-family: var(--mono); color: var(--text-primary); }
+    .verdict-ok { color: var(--ok); font-weight: 700; }
+    .verdict-ko { color: var(--ko); font-weight: 700; }
+    .final { margin-top: 20px; padding: 18px 22px; border-radius: 14px; background: #1d0e36; border: 1px solid var(--border-active); display: none; line-height: 1.6; }
+    .final.show { display: block; }
+    .final strong { font-size: 1.15rem; }
+    .seg { display: inline-flex; border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; }
+    .seg button { font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 6px 14px; border: 0; background: transparent; color: var(--text-secondary); }
+    .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+    .seg button:focus-visible { outline: 3px solid var(--accent-light); outline-offset: -3px; }
+    footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+    .list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .row {
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px 18px;
+      display: grid; grid-template-columns: 2.2rem minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: 14px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .row.ok { border-color: var(--ok-border); background: linear-gradient(90deg, var(--ok-bg), var(--bg-card) 60%); }
+    .row.ko { border-color: var(--ko-border); background: linear-gradient(90deg, var(--ko-bg), var(--bg-card) 60%); }
+    .num { color: var(--text-muted); font-weight: 600; align-self: center; }
+    .given { align-self: center; }
+    .given .ip { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; }
+    .given .mask { font-family: var(--mono); font-size: 0.9rem; color: var(--text-muted); }
+    .row .btn { margin-bottom: 1.3em; }
+    .explain { grid-column: 2 / -1; font-size: 0.95rem; line-height: 1.6; color: var(--accent-light); display: none; }
+    .row.ok .explain, .row.ko .explain { display: block; }
+    @media (max-width: 760px) {
+      header h1 { font-size: 1.7rem; }
+      .ref { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr 1fr; }
+      .num { display: none; }
+      .given, .explain { grid-column: 1 / -1; }
+      .row .btn { grid-column: 1 / -1; margin-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="ud2.html" class="back-btn">&larr; Volver a la Unidad 2</a>
+
+    <header>
+      <span class="badge-unit">Unidad Didáctica 2 · Ejercicio</span>
+      <h1>Calcula la dirección de red y la de broadcast</h1>
+      <p>Para cada dirección con su máscara, escribe la dirección de red y la de broadcast en formato decimal con puntos (por ejemplo, <code style="font-family:var(--mono)">192.168.1.0</code>). Pulsa «Comprobar» o la tecla Intro. La dificultad elegida se aplica a las nuevas rondas.</p>
+    </header>
+
+    <section class="ref" id="ref" aria-label="Teoría">
+      <div class="ref-item">
+        <strong>Dirección de red</strong>
+        <span>Todos los bits de host a <code>0</code>.<br>Equivale a hacer IP <code>AND</code> máscara.</span>
+      </div>
+      <div class="ref-item">
+        <strong>Broadcast</strong>
+        <span>Todos los bits de host a <code>1</code>.<br>Es la última dirección de la red.</span>
+      </div>
+      <div class="ref-item">
+        <strong>Atajo del salto</strong>
+        <span>Salto = <code>256 − octeto de la máscara</code>. La red es el múltiplo del salto justo por debajo; el broadcast, la siguiente red − 1.</span>
+      </div>
+    </section>
+    <p class="ref-hidden-note">Teoría oculta en esta ronda. Puedes volver a verla con «Mostrar teoría».</p>
+
+    <div class="round-opts">
+      <span class="round-label" id="roundLabel" aria-live="polite">Ronda 1</span>
+      <div class="seg" role="group" aria-label="Dificultad de las nuevas rondas">
+        <button id="lvlBasic" aria-pressed="false">Máscaras /8, /16, /24</button>
+        <button id="lvlAdv" aria-pressed="true">Cualquier máscara</button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="hideNext" checked>
+        <span class="track" aria-hidden="true"></span>
+        Ocultar la teoría a partir de la 2.ª ronda
+      </label>
+    </div>
+
+    <div class="toolbar">
+      <p class="score" aria-live="polite"><b id="hits">0</b> aciertos de <span id="done">0</span> comprobadas (<span id="total">6</span> en total)</p>
+      <div class="toolbar-actions">
+        <button class="btn" id="toggleRef" aria-pressed="false">Ocultar teoría</button>
+        <button class="btn" id="showAll">Ver soluciones</button>
+        <button class="btn primary" id="newRound">Nuevas direcciones</button>
+      </div>
+    </div>
+
+    <ol class="list" id="list"></ol>
+
+    <div class="final" id="final" role="status" aria-live="polite"></div>
+
+    <footer>
+      <p>&copy; Planificación y administración de redes · 1º ASIR</p>
+    </footer>
+  </div>
+
+  <script>
+    const ipToInt = s => {
+      const m = String(s).trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      if (!m) return null;
+      const o = m.slice(1).map(Number);
+      if (o.some(x => x > 255)) return null;
+      return ((o[0] << 24) | (o[1] << 16) | (o[2] << 8) | o[3]) >>> 0;
+    };
+    const intToIp = n => [24, 16, 8, 0].map(s => (n >>> s) & 255).join('.');
+    const maskOf = p => (p === 0 ? 0 : (0xFFFFFFFF << (32 - p)) >>> 0);
+    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const pick = arr => arr[rnd(0, arr.length - 1)];
+    const ORD = ['1.er', '2.º', '3.er', '4.º'];
+
+    // Teoría y rondas (común)
+    let round = 1;
+    const refEl = document.getElementById('ref');
+    const refBtn = document.getElementById('toggleRef');
+    const roundLabel = document.getElementById('roundLabel');
+    const hideNext = document.getElementById('hideNext');
+    function setTheory(hidden) {
+      refEl.classList.toggle('hidden', hidden);
+      refBtn.textContent = hidden ? 'Mostrar teoría' : 'Ocultar teoría';
+      refBtn.setAttribute('aria-pressed', String(hidden));
+    }
+    refBtn.addEventListener('click', () => setTheory(!refEl.classList.contains('hidden')));
+    function nextRound(fn) {
+      round++;
+      roundLabel.textContent = `Ronda ${round}`;
+      setTheory(hideNext.checked);
+      fn();
+      window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+
+    const FIRST_ROUND = [
+      ['10.25.3.1', 8], ['172.16.40.7', 16], ['192.168.1.20', 24],
+      ['192.168.1.130', 26], ['172.16.45.200', 20], ['10.1.2.3', 12]
+    ];
+    const listEl = document.getElementById('list');
+    const finalEl = document.getElementById('final');
+    let items = [];
+    let level = 'adv';
+
+    function randomRound() {
+      const out = [];
+      for (let i = 0; i < 6; i++) {
+        let ip, p;
+        if (level === 'basic') {
+          p = [8, 16, 24][i % 3];
+          const first = p === 8 ? rnd(1, 126) : p === 16 ? rnd(128, 191) : rnd(192, 223);
+          ip = `${first}.${rnd(0, 255)}.${rnd(0, 255)}.${rnd(1, 254)}`;
+        } else {
+          p = pick([9, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30]);
+          ip = `${pick([10, 172, 192, rnd(1, 223)])}.${rnd(0, 255)}.${rnd(0, 255)}.${rnd(1, 254)}`;
+        }
+        out.push([ip, p]);
+      }
+      return out;
+    }
+
+    function solve(ip, p) {
+      const n = ipToInt(ip), m = maskOf(p);
+      const net = (n & m) >>> 0, bc = (net | (~m >>> 0)) >>> 0;
+      return { net: intToIp(net), bc: intToIp(bc), mask: intToIp(m) };
+    }
+
+    function render(list) {
+      items = list.map(([ip, p]) => ({ ip, p, sol: solve(ip, p), state: null }));
+      listEl.innerHTML = '';
+      finalEl.classList.remove('show');
+      items.forEach((it, i) => {
+        const li = document.createElement('li');
+        li.className = 'row';
+        li.innerHTML = `
+          <span class="num">${i + 1}</span>
+          <div class="given"><div class="ip">${it.ip} /${it.p}</div><div class="mask">${it.sol.mask}</div></div>
+          <div class="field"><label for="n${i}">Dirección de red</label><input id="n${i}" inputmode="decimal" autocomplete="off" placeholder="x.x.x.x"><span class="fix"></span></div>
+          <div class="field"><label for="b${i}">Broadcast</label><input id="b${i}" inputmode="decimal" autocomplete="off" placeholder="x.x.x.x"><span class="fix"></span></div>
+          <button class="btn primary">Comprobar</button>
+          <p class="explain"></p>`;
+        li.querySelector('.btn').addEventListener('click', () => check(i));
+        li.querySelectorAll('input').forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(i); }));
+        listEl.appendChild(li);
+      });
+      document.getElementById('total').textContent = items.length;
+      updateScore();
+    }
+
+    function explain(it) {
+      const p = it.p;
+      if (p % 8 === 0) {
+        const k = p / 8;
+        return `La máscara /${p} cubre ${k} ${k === 1 ? 'octeto' : 'octetos'} completos de red. Los octetos de host se ponen a 0 para la red y a 255 para el broadcast.`;
+      }
+      const idx = Math.floor(p / 8);
+      const mOct = Number(it.sol.mask.split('.')[idx]);
+      const salto = 256 - mOct;
+      const v = Number(it.ip.split('.')[idx]);
+      const base = Math.floor(v / salto) * salto;
+      return `Octeto interesante: el ${ORD[idx]} (máscara ${mOct}). Salto = 256 − ${mOct} = <b>${salto}</b>. ` +
+        `${v} está entre ${base} y ${base + salto - 1}, así que la red empieza en ${base} y el broadcast termina en ${base + salto - 1}` +
+        `${idx < 3 ? '; los octetos de la derecha van a 0 (red) y a 255 (broadcast)' : ''}.`;
+    }
+
+    function check(i, revealOnly = false) {
+      const it = items[i];
+      if (it.state !== null) return;
+      const li = listEl.children[i];
+      const [nIn, bIn] = li.querySelectorAll('input');
+      const nOk = ipToInt(nIn.value) === ipToInt(it.sol.net);
+      const bOk = ipToInt(bIn.value) === ipToInt(it.sol.bc);
+      if (!revealOnly && (!nIn.value.trim() || !bIn.value.trim())) {
+        (nIn.value.trim() ? bIn : nIn).focus();
+        return;
+      }
+      const ok = !revealOnly && nOk && bOk;
+      it.state = revealOnly ? 'reveal' : ok;
+      li.classList.add(ok ? 'ok' : 'ko');
+      [[nIn, nOk, it.sol.net], [bIn, bOk, it.sol.bc]].forEach(([inp, good, sol]) => {
+        inp.disabled = true;
+        if (revealOnly) { inp.value = sol; return; }
+        inp.classList.add(good ? 'ok' : 'ko');
+        if (!good) inp.nextElementSibling.textContent = sol;
+      });
+      const b = li.querySelector('.btn'); b.disabled = true;
+      b.textContent = revealOnly ? 'Solución' : ok ? 'Correcto' : 'Revisado';
+      const verdict = revealOnly ? '' : ok ? '<span class="verdict-ok">Correcto.</span> ' : '<span class="verdict-ko">Mira la solución en verde.</span> ';
+      li.querySelector('.explain').innerHTML = verdict + explain(it);
+      updateScore();
+    }
+
+    function updateScore() {
+      const done = items.filter(it => it.state !== null);
+      const hits = items.filter(it => it.state === true).length;
+      document.getElementById('hits').textContent = hits;
+      document.getElementById('done').textContent = done.length;
+      if (done.length === items.length && items.length) {
+        const revealed = items.some(it => it.state === 'reveal');
+        const msg = hits === items.length
+          ? '¡Todas correctas! Pulsa «Nuevas direcciones» para la siguiente ronda.'
+          : 'Repasa el atajo del salto: localiza el octeto interesante y busca el múltiplo del salto.';
+        finalEl.innerHTML = `<strong>${hits} de ${items.length} correctas.</strong> ${revealed ? 'Has consultado las soluciones.' : msg}`;
+        finalEl.classList.add('show');
+      }
+    }
+
+    const lvlBasic = document.getElementById('lvlBasic'), lvlAdv = document.getElementById('lvlAdv');
+    function setLevel(l) {
+      level = l;
+      lvlBasic.setAttribute('aria-pressed', String(l === 'basic'));
+      lvlAdv.setAttribute('aria-pressed', String(l === 'adv'));
+    }
+    lvlBasic.addEventListener('click', () => setLevel('basic'));
+    lvlAdv.addEventListener('click', () => setLevel('adv'));
+    document.getElementById('showAll').addEventListener('click', () => items.forEach((_, i) => check(i, true)));
+    document.getElementById('newRound').addEventListener('click', () => nextRound(() => render(randomRound())));
+
+    render(FIRST_ROUND);
+  </script>
+</body>
+</html>
