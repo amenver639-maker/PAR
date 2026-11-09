@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejercicio: parte de red y parte de host · UD2</title>
+  <style>
+    :root {
+      --bg-main: #0a0512;
+      --bg-card: #150a26;
+      --bg-card-hover: #22103e;
+      --border-color: #3b1b6e;
+      --border-active: #8b5cf6;
+      --text-primary: #ffffff;
+      --text-secondary: #c084fc;
+      --text-muted: #a78bfa;
+      --accent: #8b5cf6;
+      --accent-light: #d8b4fe;
+      --net: #7c3aed;
+      --host-bg: #2a1450;
+      --ok: #4ade80;
+      --ok-bg: rgba(34, 197, 94, 0.12);
+      --ok-border: rgba(34, 197, 94, 0.45);
+      --ko: #fb923c;
+      --ko-bg: rgba(249, 115, 22, 0.12);
+      --ko-border: rgba(249, 115, 22, 0.5);
+      --mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container { width: 100%; max-width: 900px; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.95rem; font-weight: 600;
+      margin-bottom: 30px; padding: 8px 16px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color); border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+    .back-btn:hover { background-color: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+
+    header { margin-bottom: 28px; }
+    .badge-unit {
+      display: inline-block; background-color: #2e1065; color: var(--accent-light);
+      padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 15px; border: 1px solid var(--border-color);
+    }
+    header h1 { font-size: 2.2rem; line-height: 1.3; margin-bottom: 10px; }
+    header p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6; max-width: 70ch; }
+
+    /* Leyenda de colores */
+    .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; color: var(--text-secondary); font-size: 0.95rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .sw { width: 22px; height: 22px; border-radius: 6px; display: inline-block; }
+    .sw.net { background: var(--net); }
+    .sw.host { background: var(--host-bg); border: 2px dashed var(--accent-light); }
+
+    /* Teoría */
+    .ref { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+    .ref-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 18px; }
+    .ref-item strong { display: block; font-size: 1.15rem; margin-bottom: 6px; }
+    .ref-item span { color: var(--text-muted); font-size: 0.95rem; }
+    .ref-item code { font-family: var(--mono); color: var(--accent-light); }
+    .mini { display: flex; gap: 4px; margin: 8px 0; }
+    .mini i {
+      flex: 1; font-style: normal; text-align: center; font-size: 0.75rem; font-weight: 700;
+      padding: 5px 0; border-radius: 5px;
+    }
+    .mini i.n { background: var(--net); }
+    .mini i.h { background: var(--host-bg); border: 1px dashed var(--accent-light); color: var(--accent-light); }
+    .ref.hidden { display: none; }
+    .ref-hidden-note { display: none; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .ref.hidden + .ref-hidden-note { display: block; }
+
+    /* Opciones de ronda */
+    .round-opts {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+      margin-bottom: 20px; padding: 12px 18px; border-radius: 14px;
+      background: #1d0e36; border: 1px dashed var(--border-color);
+    }
+    .round-label { font-weight: 700; color: var(--accent-light); }
+    .switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-secondary); font-size: 0.95rem; }
+    .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .switch .track { width: 44px; height: 24px; border-radius: 12px; background: var(--border-color); position: relative; flex: none; transition: background-color 0.2s ease; }
+    .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }
+    .switch input:checked + .track { background: var(--accent); }
+    .switch input:checked + .track::after { transform: translateX(20px); }
+    .switch input:focus-visible + .track { outline: 3px solid var(--accent-light); outline-offset: 2px; }
+
+    /* Barra */
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .score { font-size: 1.05rem; color: var(--text-secondary); }
+    .score b { color: var(--text-primary); font-size: 1.3rem; }
+    .toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      padding: 8px 16px; border-radius: 20px;
+      background: var(--bg-card); color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .btn:hover:not(:disabled) { background: var(--bg-card-hover); border-color: var(--border-active); color: var(--text-primary); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover:not(:disabled) { background: #7c3aed; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .btn:focus-visible, .oct:focus-visible, .back-btn:focus-visible { outline: 3px solid var(--accent-light); outline-offset: 2px; }
+
+    /* Filas */
+    .list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .row {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 14px; padding: 14px 18px;
+      display: grid; grid-template-columns: 2.2rem 1fr auto; align-items: center; gap: 14px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .row.ok { border-color: var(--ok-border); background: linear-gradient(90deg, var(--ok-bg), var(--bg-card) 60%); }
+    .row.ko { border-color: var(--ko-border); background: linear-gradient(90deg, var(--ko-bg), var(--bg-card) 60%); }
+    .num { color: var(--text-muted); font-weight: 600; }
+
+    .octets { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
+    .dot { font-family: var(--mono); font-size: 1.4rem; color: var(--text-muted); }
+    .oct {
+      font-family: var(--mono); font-size: 1.25rem; font-weight: 700; cursor: pointer;
+      min-width: 4.4rem; padding: 8px 6px 6px; border-radius: 10px;
+      background: #1d0e36; color: var(--text-primary);
+      border: 2px solid var(--border-color);
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+    .oct small { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
+    .oct:hover:not(:disabled) { border-color: var(--border-active); }
+    .oct.net { background: var(--net); border-color: var(--net); }
+    .oct.net small { color: #ede9fe; }
+    .oct.host { background: var(--host-bg); border-style: dashed; border-color: var(--accent-light); }
+    .oct.host small { color: var(--accent-light); }
+    .oct:disabled { cursor: default; }
+    .oct.wrong { box-shadow: 0 0 0 3px var(--ko); }
+
+    .explain { grid-column: 2 / -1; font-size: 0.95rem; line-height: 1.6; color: var(--accent-light); display: none; }
+    .row.ok .explain, .row.ko .explain { display: block; }
+    .explain code { font-family: var(--mono); color: var(--text-primary); }
+    .verdict-ok { color: var(--ok); font-weight: 700; }
+    .verdict-ko { color: var(--ko); font-weight: 700; }
+
+    .final { margin-top: 20px; padding: 18px 22px; border-radius: 14px; background: #1d0e36; border: 1px solid var(--border-active); display: none; line-height: 1.6; }
+    .final.show { display: block; }
+    .final strong { font-size: 1.15rem; }
+
+    footer { margin-top: auto; padding-top: 40px; color: var(--text-muted); font-size: 0.9rem; text-align: center; }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.7rem; }
+      .ref { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+      .num { display: none; }
+      .oct { min-width: 0; flex: 1; font-size: 1.05rem; }
+      .octets { width: 100%; }
+      .explain { grid-column: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="ud2.html" class="back-btn">&larr; Volver a la Unidad 2</a>
+
+    <header>
+      <span class="badge-unit">Unidad Didáctica 2 · Ejercicio</span>
+      <h1>Señala la parte de red y la parte de host</h1>
+      <p>Pulsa cada octeto para marcarlo como red o como host (cada pulsación cambia entre las dos). Cuando tengas los cuatro marcados, pulsa «Comprobar».</p>
+      <div class="legend" aria-hidden="true">
+        <span><i class="sw net"></i> Red</span>
+        <span><i class="sw host"></i> Host</span>
+      </div>
+    </header>
+
+    <section class="ref" id="ref" aria-label="Teoría: parte de red y host según la clase">
+      <div class="ref-item">
+        <strong>Clase A</strong>
+        <div class="mini" aria-hidden="true"><i class="n">R</i><i class="h">H</i><i class="h">H</i><i class="h">H</i></div>
+        <span>Primer octeto <code>1 – 126</code><br>Red: 1 octeto · Host: 3 octetos</span>
+      </div>
+      <div class="ref-item">
+        <strong>Clase B</strong>
+        <div class="mini" aria-hidden="true"><i class="n">R</i><i class="n">R</i><i class="h">H</i><i class="h">H</i></div>
+        <span>Primer octeto <code>128 – 191</code><br>Red: 2 octetos · Host: 2 octetos</span>
+      </div>
+      <div class="ref-item">
+        <strong>Clase C</strong>
+        <div class="mini" aria-hidden="true"><i class="n">R</i><i class="n">R</i><i class="n">R</i><i class="h">H</i></div>
+        <span>Primer octeto <code>192 – 223</code><br>Red: 3 octetos · Host: 1 octeto</span>
+      </div>
+    </section>
+    <p class="ref-hidden-note">Teoría oculta en esta ronda. Puedes volver a verla con «Mostrar teoría».</p>
+
+    <div class="round-opts">
+      <span class="round-label" id="roundLabel" aria-live="polite">Ronda 1</span>
+      <label class="switch">
+        <input type="checkbox" id="hideNext" checked>
+        <span class="track" aria-hidden="true"></span>
+        Ocultar la teoría a partir de la 2.ª ronda
+      </label>
+    </div>
+
+    <div class="toolbar">
+      <p class="score" aria-live="polite"><b id="hits">0</b> aciertos de <span id="done">0</span> comprobadas (<span id="total">8</span> en total)</p>
+      <div class="toolbar-actions">
+        <button class="btn" id="toggleRef" aria-pressed="false">Ocultar teoría</button>
+        <button class="btn" id="showAll">Ver soluciones</button>
+        <button class="btn primary" id="newRound">Nuevas direcciones</button>
+      </div>
+    </div>
+
+    <ol class="list" id="list"></ol>
+
+    <div class="final" id="final" role="status" aria-live="polite"></div>
+
+    <footer>
+      <p>&copy; Planificación y administración de redes · 1º ASIR</p>
+    </footer>
+  </div>
+
+  <script>
+    const FIRST_ROUND = [
+      '10.25.3.1', '172.16.40.7', '192.168.1.20', '126.200.4.9',
+      '150.75.200.1', '213.45.6.78', '64.33.12.250', '200.100.50.25'
+    ];
+    const NET_OCTETS = { A: 1, B: 2, C: 3 };
+    const RANGES = { A: '1 – 126', B: '128 – 191', C: '192 – 223' };
+
+    const listEl = document.getElementById('list');
+    const finalEl = document.getElementById('final');
+    let items = [];
+
+    function classOf(ip) {
+      const o = Number(ip.split('.')[0]);
+      if (o >= 1 && o <= 126) return 'A';
+      if (o >= 128 && o <= 191) return 'B';
+      if (o >= 192 && o <= 223) return 'C';
+      return null;
+    }
+    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function randomRound() {
+      // 3 de clase A, 3 de B y 2 de C (o al revés), mezcladas
+      const edges = { A: [1, 126], B: [128, 191], C: [192, 223] };
+      const counts = Math.random() < 0.5 ? { A: 3, B: 3, C: 2 } : { A: 2, B: 3, C: 3 };
+      const out = [];
+      for (const c of ['A', 'B', 'C']) {
+        for (let k = 0; k < counts[c]; k++) {
+          out.push(`${rnd(...edges[c])}.${rnd(0, 255)}.${rnd(0, 255)}.${rnd(1, 254)}`);
+        }
+      }
+      for (let i = out.length - 1; i > 0; i--) { const j = rnd(0, i); [out[i], out[j]] = [out[j], out[i]]; }
+      return out;
+    }
+
+    function labelOf(state) { return state === 'net' ? 'Red' : state === 'host' ? 'Host' : '¿?'; }
+
+    function render(ips) {
+      items = ips.map(ip => ({ ip, octs: ip.split('.'), cls: classOf(ip), marks: [null, null, null, null], checked: null }));
+      listEl.innerHTML = '';
+      finalEl.classList.remove('show');
+      items.forEach((it, i) => {
+        const li = document.createElement('li');
+        li.className = 'row';
+        const octHtml = it.octs.map((o, k) =>
+          (k ? '<span class="dot" aria-hidden="true">.</span>' : '') +
+          `<button class="oct" data-k="${k}" aria-label="Octeto ${k + 1}: ${o}, sin marcar">${o}<small>¿?</small></button>`
+        ).join('');
+        li.innerHTML = `
+          <span class="num">${i + 1}</span>
+          <div class="octets" role="group" aria-label="Dirección ${it.ip}">${octHtml}</div>
+          <button class="btn primary check" disabled>Comprobar</button>
+          <p class="explain"></p>`;
+        li.querySelectorAll('.oct').forEach(b => b.addEventListener('click', () => toggle(i, Number(b.dataset.k))));
+        li.querySelector('.check').addEventListener('click', () => check(i));
+        listEl.appendChild(li);
+      });
+      document.getElementById('total').textContent = items.length;
+      updateScore();
+    }
+
+    function paint(li, k, state) {
+      const b = li.querySelectorAll('.oct')[k];
+      b.classList.toggle('net', state === 'net');
+      b.classList.toggle('host', state === 'host');
+      b.querySelector('small').textContent = labelOf(state);
+      b.setAttribute('aria-label', `Octeto ${k + 1}: ${b.firstChild.textContent}, ${state ? 'marcado como ' + labelOf(state).toLowerCase() : 'sin marcar'}`);
+    }
+
+    function toggle(i, k) {
+      const it = items[i];
+      if (it.checked !== null) return;
+      it.marks[k] = it.marks[k] === 'net' ? 'host' : 'net';
+      const li = listEl.children[i];
+      paint(li, k, it.marks[k]);
+      li.querySelector('.check').disabled = it.marks.some(m => m === null);
+    }
+
+    function check(i, revealOnly = false) {
+      const it = items[i];
+      if (it.checked !== null) return;
+      const li = listEl.children[i];
+      const n = NET_OCTETS[it.cls];
+      const correct = [0, 1, 2, 3].map(k => (k < n ? 'net' : 'host'));
+      const ok = !revealOnly && correct.every((c, k) => c === it.marks[k]);
+      it.checked = revealOnly ? 'reveal' : ok;
+
+      li.classList.add(ok ? 'ok' : 'ko');
+      li.querySelectorAll('.oct').forEach((b, k) => {
+        if (!revealOnly && it.marks[k] !== correct[k]) b.classList.add('wrong');
+        paint(li, k, correct[k]);
+        b.disabled = true;
+      });
+      const checkBtn = li.querySelector('.check');
+      checkBtn.disabled = true;
+      checkBtn.textContent = revealOnly ? 'Solución' : ok ? 'Correcto' : 'Revisado';
+
+      const red = it.octs.slice(0, n).join('.');
+      const host = it.octs.slice(n).join('.');
+      const netAddr = it.octs.map((o, k) => (k < n ? o : '0')).join('.');
+      const bcast = it.octs.map((o, k) => (k < n ? o : '255')).join('.');
+      const verdict = revealOnly ? '' : ok
+        ? '<span class="verdict-ok">Correcto.</span> '
+        : '<span class="verdict-ko">Revisa los octetos rodeados en naranja.</span> ';
+      li.querySelector('.explain').innerHTML =
+        `${verdict}Primer octeto ${it.octs[0]} (${RANGES[it.cls]}): <b>clase ${it.cls}</b>, ${n} ${n === 1 ? 'octeto' : 'octetos'} de red. ` +
+        `Red <code>${red}</code> · host <code>${host}</code>. Dirección de red <code>${netAddr}</code>, broadcast <code>${bcast}</code>.`;
+      updateScore();
+    }
+
+    function updateScore() {
+      const done = items.filter(it => it.checked !== null);
+      const hits = items.filter(it => it.checked === true).length;
+      document.getElementById('hits').textContent = hits;
+      document.getElementById('done').textContent = done.length;
+      if (done.length === items.length && items.length) {
+        const revealed = items.some(it => it.checked === 'reveal');
+        const msg = hits === items.length
+          ? '¡Todas correctas! Pulsa «Nuevas direcciones» para la siguiente ronda.'
+          : hits >= items.length * 0.75
+            ? 'Muy bien. Recuerda: primero identifica la clase y después cuenta los octetos de red.'
+            : 'Repasa la teoría: la clase te dice cuántos octetos son de red (A: 1, B: 2, C: 3).';
+        finalEl.innerHTML = `<strong>${hits} de ${items.length} correctas.</strong> ${revealed ? 'Has consultado las soluciones.' : msg}`;
+        finalEl.classList.add('show');
+      }
+    }
+
+    // Teoría y rondas
+    let round = 1;
+    const refEl = document.getElementById('ref');
+    const refBtn = document.getElementById('toggleRef');
+    const roundLabel = document.getElementById('roundLabel');
+    const hideNext = document.getElementById('hideNext');
+
+    function setTheory(hidden) {
+      refEl.classList.toggle('hidden', hidden);
+      refBtn.textContent = hidden ? 'Mostrar teoría' : 'Ocultar teoría';
+      refBtn.setAttribute('aria-pressed', String(hidden));
+    }
+
+    refBtn.addEventListener('click', () => setTheory(!refEl.classList.contains('hidden')));
+    document.getElementById('showAll').addEventListener('click', () => items.forEach((_, i) => check(i, true)));
+    document.getElementById('newRound').addEventListener('click', () => {
+      round++;
+      roundLabel.textContent = `Ronda ${round}`;
+      setTheory(hideNext.checked);
+      render(randomRound());
+      window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+
+    render(FIRST_ROUND);
+  </script>
+</body>
+</html>
